@@ -17,9 +17,25 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('BSB_VERSION', '1.0.0');
-define('BSB_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('BSB_PLUGIN_DIR', plugin_dir_path(__FILE__));
+// 4文字以上のプレフィックスを使用
+define('BASKSC_VERSION', '1.0.0');
+define('BASKSC_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('BASKSC_PLUGIN_DIR', plugin_dir_path(__FILE__));
+
+/**
+ * フロントエンド用アセットを登録
+ */
+function basketball_scorebook_register_assets()
+{
+    // フロントエンド用CSSを登録（まだ読み込まない）
+    wp_register_style(
+        'basketball-scorebook-frontend',
+        BASKSC_PLUGIN_URL . 'assets/css/frontend.css',
+        array(),
+        BASKSC_VERSION
+    );
+}
+add_action('wp_enqueue_scripts', 'basketball_scorebook_register_assets');
 
 /**
  * ショートコード [basketball_scorebook]
@@ -27,22 +43,25 @@ define('BSB_PLUGIN_DIR', plugin_dir_path(__FILE__));
  */
 function basketball_scorebook_shortcode($atts)
 {
+    // 登録済みCSSをエンキュー（ショートコードが使われたページでのみ読み込まれる）
+    wp_enqueue_style('basketball-scorebook-frontend');
+
     $atts = shortcode_atts(
         array(
-            'height' => '85vh', // デフォルト高さ（必要に応じて 100vh などに変更可）
+            'height' => '85vh',
         ),
         $atts,
         'basketball_scorebook'
     );
 
-    $iframe_url = BSB_PLUGIN_URL . 'assets/app/index.html?v=' . BSB_VERSION;
+    $iframe_url = BASKSC_PLUGIN_URL . 'assets/app/index.html?v=' . BASKSC_VERSION;
     $height     = esc_attr($atts['height']);
 
     ob_start();
     ?>
-    <div class="bsb-container" style="width: 100%; margin: 2rem 0;">
+    <div class="basksc-container">
         <iframe
-            id="bsb-scorebook-iframe"
+            id="basksc-scorebook-iframe"
             src="<?php echo esc_url($iframe_url); ?>"
             style="width: 100%; height: <?php echo esc_attr($height); ?>; border: 2px solid #e5e7eb; border-radius: 8px; display: block;"
             title="Basketball Scorebook"
@@ -50,20 +69,12 @@ function basketball_scorebook_shortcode($atts)
             allowfullscreen
         ></iframe>
 
-        <div class="bsb-guide" style="margin-top: 1rem; padding: 1rem; background: #f3f4f6; border-radius: 4px; font-size: 0.875rem; line-height: 1.6;">
-            <strong>📱 推奨環境:</strong> iPad または PC の横向き、Safari / Chrome でのご利用を推奨します（LINE 内ブラウザは非推奨）。<br>
+        <div class="basksc-guide">
+            <strong>📱 推奨環境:</strong> iPad または PC の横向き、Safari / Chrome でのご利用を推奨します(LINE 内ブラウザは非推奨)。<br>
             <strong>💾 データ保存:</strong> 入力内容はブラウザの LocalStorage に自動保存されます。同じ端末・ブラウザであれば再訪時に復元されます。<br>
             <strong>🖨️ 印刷 / PDF:</strong> アプリ内の「Print PDF」ボタンから、スコアシートのみを A4 横で印刷 / PDF 保存できます。
         </div>
     </div>
-    <style>
-        @media print {
-            .bsb-container,
-            .bsb-guide {
-                display: none !important;
-            }
-        }
-    </style>
     <?php
 
     return ob_get_clean();
@@ -71,7 +82,36 @@ function basketball_scorebook_shortcode($atts)
 add_shortcode('basketball_scorebook', 'basketball_scorebook_shortcode');
 
 /**
- * 管理画面に簡単な説明ページを追加（任意）
+ * 管理画面用のスタイルとスクリプトをエンキュー
+ */
+function basketball_scorebook_enqueue_admin_assets($hook)
+{
+    // このプラグインの設定ページのみで読み込む
+    if ('settings_page_basketball-scorebook' !== $hook) {
+        return;
+    }
+
+    // 管理画面用CSS
+    wp_enqueue_style(
+        'basketball-scorebook-admin',
+        BASKSC_PLUGIN_URL . 'assets/css/admin.css',
+        array(),
+        BASKSC_VERSION
+    );
+
+    // 管理画面用JavaScript
+    wp_enqueue_script(
+        'basketball-scorebook-admin',
+        BASKSC_PLUGIN_URL . 'assets/js/admin.js',
+        array(),
+        BASKSC_VERSION,
+        true
+    );
+}
+add_action('admin_enqueue_scripts', 'basketball_scorebook_enqueue_admin_assets');
+
+/**
+ * 管理画面に簡単な説明ページを追加
  */
 function basketball_scorebook_add_admin_menu()
 {
@@ -85,84 +125,47 @@ function basketball_scorebook_add_admin_menu()
 }
 add_action('admin_menu', 'basketball_scorebook_add_admin_menu');
 
+/**
+ * 設定ページの出力
+ */
 function basketball_scorebook_settings_page()
 {
     ?>
     <div class="wrap">
         <h2>Basketball Scorebook - 設定と使い方</h2>
-        <p>以下のショートコードを投稿または固定ページに貼り付けてご利用ください。最も広いページテンプレート（全幅など）でご利用いただくことを推奨します。</p>
+        <p>以下のショートコードを投稿または固定ページに貼り付けてご利用ください。最も広いページテンプレート(全幅など)でご利用いただくことを推奨します。</p>
 
-        <!-- ショートコードのコードボックスの表示 -->
-        <div class="bsb-code-box">
-            <code id="bsb-shortcode">[basketball_scorebook]</code>
-            <button type="button" class="button button-secondary" onclick="bsbCopyToClipboard('bsb-shortcode')">コピー</button>
+        <div class="basksc-code-box">
+            <code id="basksc-shortcode">[basketball_scorebook]</code>
+            <button type="button" class="button button-secondary" data-clipboard-target="basksc-shortcode">コピー</button>
         </div>
 
-        <!-- 高さのカスタマイズ説明 -->
         <h3>高さのカスタマイズ</h3>
-        <p>iframeの高さをカスタマイズしたい場合は、<code>height</code>属性を指定できます。デフォルトは<code>85vh</code>（ビューポートの高さの85%）です。</p>
-        <div class="bsb-code-box">
-            <code id="bsb-shortcode-height">[basketball_scorebook height="100vh"]</code>
-            <button type="button" class="button button-secondary" onclick="bsbCopyToClipboard('bsb-shortcode-height')">コピー</button>
+        <p>iframeの高さをカスタマイズしたい場合は、<code>height</code>属性を指定できます。デフォルトは<code>85vh</code>(ビューポートの高さの85%)です。</p>
+        <div class="basksc-code-box">
+            <code id="basksc-shortcode-height">[basketball_scorebook height="100vh"]</code>
+            <button type="button" class="button button-secondary" data-clipboard-target="basksc-shortcode-height">コピー</button>
         </div>
-        <p style="margin-top: 0.5rem; font-size: 0.9em; color: #666;">
+        <p class="basksc-usage-note">
             <strong>使用例:</strong><br>
             • <code>[basketball_scorebook height="100vh"]</code> - 画面全体の高さ<br>
             • <code>[basketball_scorebook height="600px"]</code> - 固定の600ピクセル<br>
             • <code>[basketball_scorebook height="90vh"]</code> - 画面の90%の高さ
         </p>
 
-        <!-- 使い方・デモサイトの強調表示 -->
         <h3>使い方・デモサイト</h3>
         <p>具体的な利用方法、応用例、最新の情報は、開発元サイトでご確認いただけます。本プラグインの全機能のデモも兼ねています。</p>
-        <p>👉 <a href="https://doc778.com/scorebook/" target="_blank" style="font-weight: bold; font-size: 1.1em; color: #d63638;">【公式】Basketball Scorebook 利用ガイド・デモサイトはこちら</a></p>
+        <p>👉 <a href="https://doc778.com/scorebook/" target="_blank" class="basksc-demo-link">【公式】Basketball Scorebook 利用ガイド・デモサイトはこちら</a></p>
 
-        <!-- サポートポリシーの明記（抑止力） -->
         <h3>サポートに関する注意点</h3>
-        <p style="color: #a00; border: 1px solid #fcc; padding: 10px; background: #fff8f8;">本プラグインはGPLライセンスで提供されますが、<strong>コード内の開発元へのリンクや著作権表示を削除・改変した場合、そのバージョンは非公式なものとみなし、サポートおよびバグ修正の対象外</strong>とさせていただきます。ご理解をお願いいたします。</p>
+        <p class="basksc-support-notice">本プラグインはGPLライセンスで提供されますが、<strong>コード内の開発元へのリンクや著作権表示を削除・改変した場合、そのバージョンは非公式なものとみなし、サポートおよびバグ修正の対象外</strong>とさせていただきます。ご理解をお願いいたします。</p>
 
     </div>
-
-    <style>
-        .bsb-code-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #f5f5f5;
-            padding: 10px 15px;
-            border-radius: 4px;
-            margin: 8px 0;
-        }
-        .bsb-code-box code {
-            flex: 1;
-            background: none;
-            font-size: 14px;
-        }
-    </style>
-
-    <script>
-        function bsbCopyToClipboard(elementId) {
-            const el = document.getElementById(elementId);
-            const text = el.textContent;
-            navigator.clipboard.writeText(text).then(function() {
-                alert('コピーしました！');
-            }).catch(function() {
-                // フォールバック
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                alert('コピーしました！');
-            });
-        }
-    </script>
     <?php
 }
 
 /**
- * 有効化 / 無効化フック（将来の拡張用に定義のみ）
+ * 有効化フック
  */
 function basketball_scorebook_activate()
 {
@@ -170,10 +173,12 @@ function basketball_scorebook_activate()
 }
 register_activation_hook(__FILE__, 'basketball_scorebook_activate');
 
+/**
+ * 無効化フック
+ */
 function basketball_scorebook_deactivate()
 {
     // LocalStorage はクライアント側なので特に削除処理なし
 }
 register_deactivation_hook(__FILE__, 'basketball_scorebook_deactivate');
-
 

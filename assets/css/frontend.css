@@ -1,0 +1,21 @@
+/* フロントエンド用スタイル */
+.basksc-container {
+    width: 100%;
+    margin: 2rem 0;
+}
+
+.basksc-guide {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f3f4f6;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+@media print {
+    .basksc-container,
+    .basksc-guide {
+        display: none !important;
+    }
+}
