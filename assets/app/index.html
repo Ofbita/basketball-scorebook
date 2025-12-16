@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basketball RecordedScorebook（Basketball Manual）</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23f97316'/><path d='M50 5 L50 95 M5 50 L95 50 M15 20 Q50 50 15 80 M85 20 Q50 50 85 80' stroke='%23000' stroke-width='3' fill='none'/></svg>">
+
+    <!-- Tailwind CSS（ローカル・コンパイル） -->
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- Alpine.js（ローカル / cdn.min.js にバンドル） -->
+    <script defer src="./cdn.min.js"></script>
+
+    <style>
+        /* Custom scrollbar for dense tables */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Print Settings for A4 Landscape */
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                background-color: white;
+            }
+            .no-print,
+            .fullscreen-btn {
+                display: none !important;
+            }
+            #root {
+                width: 100%;
+                margin: 0;
+                padding: 2mm 3mm;
+                zoom: 0.64;
+            }
+            .shadow-xl { box-shadow: none !important; }
+            .min-h-screen { min-height: auto !important; }
+            .border-2 { border-width: 1px !important; }
+            .bg-gray-100 { background-color: white !important; }
+            input { border: none !important; }
+            textarea { border: 1px dashed #ccc !important; }
+            .print-bg-gray { background-color: #d1d5db !important; }
+            .print-bg-dark-gray { background-color: #9ca3af !important; }
+            tr, td, th, .border { page-break-inside: avoid; }
+        }
+
+        [x-cloak] { display: none !important; }
+
+        /* ツールバーのボタンデザイン */
+        .bsb-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            padding: 0.375rem 0.5rem;
+            border-radius: 9999px;
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
+            max-width: 100%;
+        }
+        .bsb-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #e5e7eb;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.45);
+            cursor: pointer;
+            transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+            white-space: nowrap;
+        }
+        .bsb-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.6);
+            border-color: rgba(249, 250, 251, 0.9);
+        }
+        .bsb-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.55);
+        }
+        .bsb-btn-icon {
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            background: rgba(15, 23, 42, 0.9);
+        }
+        .bsb-btn--export .bsb-btn-icon {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+        }
+        .bsb-btn--import .bsb-btn-icon {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+        }
+        .bsb-btn--reset .bsb-btn-icon {
+            background: linear-gradient(135deg, #dc2626, #f97316);
+        }
+        .bsb-btn--print .bsb-btn-icon {
+            background: linear-gradient(135deg, #000000, #4b5563);
+        }
+        .bsb-btn--help .bsb-btn-icon {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        }
+        .bsb-btn-label {
+            letter-spacing: 0.02em;
+        }
+
+        /* 見出しロゴ風タイトル */
+        .bsb-logo-title {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-weight: 900;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            font-size: 2.25rem;
+            line-height: 1.25;
+            /* 疑似的に太さを増すためのアウトライン風シャドウ */
+            text-shadow:
+                0.02em 0 0 currentColor,
+               -0.02em 0 0 currentColor,
+                0 0.02em 0 currentColor,
+                0 -0.02em 0 currentColor;
+        }
+        @media (max-width: 768px) {
+            .bsb-logo-title {
+                font-size: 1.7rem;
+                letter-spacing: 0.02em;
+            }
+        }
+
+        /* 小さい画面ではボタンを少しコンパクトにし、中央寄せにする */
+        @media (max-width: 768px) {
+            .bsb-toolbar {
+                justify-content: center;
+                padding: 0.25rem 0.4rem;
+                row-gap: 0.35rem;
+            }
+            .bsb-btn {
+                padding: 0.4rem 0.7rem;
+                font-size: 0.75rem;
+            }
+            .bsb-btn-icon {
+                width: 1.5rem;
+                height: 1.5rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* フルスクリーン切り替えボタン */
+        .fullscreen-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9998;
+            background: #1f2937;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .fullscreen-btn:hover {
+            background: #374151;
+            transform: translateY(-2px);
+        }
+
+        /* チーム切り替え固定ボタン */
+        .team-switch-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9999;
+            padding: 1rem 0.5rem;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            letter-spacing: 0.1em;
+        }
+        .team-switch-btn--home {
+            left: 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .team-switch-btn--away {
+            right: 0;
+            border-radius: 8px 0 0 8px;
+        }
+        .team-switch-btn--home.active {
+            background: linear-gradient(180deg, #2563eb, #1d4ed8);
+            color: white;
+        }
+        .team-switch-btn--home:not(.active) {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        .team-switch-btn--home:not(.active):hover {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        .team-switch-btn--away.active {
+            background: linear-gradient(180deg, #ea580c, #c2410c);
+            color: white;
+        }
+        .team-switch-btn--away:not(.active) {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        .team-switch-btn--away:not(.active):hover {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        /* ウォーターマーク */
+        .team-watermark {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            user-select: none;
+            overflow: hidden;
+            z-index: 20;
+        }
+        .team-watermark span {
+            font-size: 10rem;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            opacity: 0.12;
+            text-transform: uppercase;
+        }
+        .team-watermark--home span {
+            color: #2563eb;
+        }
+        .team-watermark--away span {
+            color: #ea580c;
+        }
+        @media (max-width: 768px) {
+            .team-watermark span {
+                font-size: 5rem;
+            }
+            .team-switch-btn {
+                padding: 0.75rem 0.4rem;
+                font-size: 0.75rem;
+            }
+        }
+        @media print {
+            .team-switch-btn {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+    <div id="root" x-data="scoresheet()" x-cloak class="min-h-screen py-8 px-4 print:py-0 print:px-0 print:h-auto">
+        <!-- ▼スコアブック本体　-->
+        <div>
+            <div class="max-w-[1400px] mx-auto bg-white shadow-xl p-4 md:p-8 min-w-[350px] print:p-0 print:shadow-none print:max-w-none print:w-full">
+            
+            <!-- Controls (Reset / Share / Print) -->
+            <div class="no-print flex justify-end mb-4 items-center border-b pb-2">
+                <div class="flex gap-2 flex-wrap justify-end">
+                    <!-- JSON Import 用の隠しファイル入力 -->
+                    <input
+                        type="file"
+                        id="import-file"
+                        accept=".json,application/json"
+                        class="hidden"
+                        @change="importJSON($event)"
+                    >
+
+                    <!-- Export / Import / Reset / Print / Help ボタン -->
+                        <div class="bsb-toolbar">
+                            <button 
+                            @click="clearData()"
+                            class="bsb-btn bsb-btn--reset"
+                            title="全部消してまっさらな用紙にする"
+                        >
+                            <span class="bsb-btn-icon">↺</span>
+                            <span class="bsb-btn-label">リセット</span>
+                        </button>
+
+                        <button 
+                            @click="exportJSON()"
+                            class="bsb-btn bsb-btn--export"
+                            title="今のスコアシートを保存（テンプレート / バックアップ）"
+                        >
+                            <span class="bsb-btn-icon">📤</span>
+                            <span class="bsb-btn-label">データ書出</span>
+                        </button>
+                        <button 
+                            @click="triggerImport()"
+                            class="bsb-btn bsb-btn--import"
+                            title="前に保存したスコアシートをロードする"
+                        >
+                            <span class="bsb-btn-icon">📥</span>
+                            <span class="bsb-btn-label">データ読込</span>
+                        </button>
+
+                        <button 
+                            @click="window.print()"
+                            class="bsb-btn bsb-btn--print"
+                            title="スコアシートだけをA4ヨコで印刷 / PDF保存"
+                        >
+                            <span class="bsb-btn-icon">🖨️</span>
+                            <span class="bsb-btn-label">印刷 / PDF</span>
+                        </button>
+                        <button 
+                            @click="window.open('https://doc778.com/help-scorebook', '_blank')"
+                            class="bsb-btn bsb-btn--help"
+                            title="使い方を見る"
+                        >
+                            <span class="bsb-btn-icon">❓</span>
+                            <span class="bsb-btn-label">使い方</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Section -->
+            <div class="border-2 border-gray-800 p-2 mb-4 print:mb-1 bg-white">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 print:mb-1 print:flex-row print:justify-between">
+                    <h1 class="bsb-logo-title print:text-xl">
+                        Basketball Scorebook <span class="text-lg font-normal ml-2 text-gray-600">タイム式</span>
+                    </h1>
+                    <div class="text-sm text-gray-500 font-mono print:text-xs flex items-center gap-1 print:ml-auto">
+                        <a href="https://doc778.com" target="_blank" rel="noopener noreferrer" class="print:pointer-events-none">
+                            <img src="BasketballManual2.webp" alt="Basketball Manual" class="h-16 w-auto print:h-12 cursor-pointer hover:opacity-80 transition-opacity" />
+                        </a>
+                        <span>ver.251206</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row border border-gray-500 mb-4 print:mb-1 overflow-x-auto">
+                    <!-- 1. Left Block: Team Names (Upper/Lower) -->
+                    <div class="flex-1 border-b sm:border-b-0 sm:border-r border-gray-500 flex flex-col flex-shrink-0">
+                        <div class="flex-1 border-b border-gray-500 flex items-stretch">
+                            <div class="w-16 flex items-center justify-center border-r border-gray-500 bg-white p-1 shrink-0">
+                                <span class="text-[10px] font-bold">ﾎｰﾑﾁｰﾑ名</span>
+                            </div>
+                            <input type="text" class="flex-1 px-2 outline-none font-bold text-sm" x-model="myTeamName" aria-label="ホームチーム名" title="ホームチーム名">
+                        </div>
+                        <div class="flex-1 flex items-stretch">
+                            <div class="w-16 flex items-center justify-center border-r border-gray-500 bg-white p-1 shrink-0">
+                                <span class="text-[10px] font-bold">ｱｳｪｲﾁｰﾑ名</span>
+                            </div>
+                            <input type="text" class="flex-1 px-2 outline-none font-bold text-sm" x-model="opponentTeamName" aria-label="アウェイチーム名" title="アウェイチーム名">
+                        </div>
+                    </div>
+
+                    <!-- 2. Middle Block: Venue & Date (Upper/Lower) -->
+                    <div class="flex-1 border-b sm:border-b-0 sm:border-r border-gray-500 flex flex-col flex-shrink-0">
+                        <div class="flex-1 border-b border-gray-500 flex items-stretch">
+                            <div class="w-12 flex items-center justify-center border-r border-gray-500 bg-white p-1 shrink-0">
+                                <span class="text-[10px] font-bold">会場</span>
+                            </div>
+                            <input type="text" class="flex-1 px-2 outline-none text-xs" x-model="venue" aria-label="会場名" title="会場名">
+                        </div>
+                        <div class="flex-1 flex items-stretch">
+                            <div class="w-12 flex items-center justify-center border-r border-gray-500 bg-white p-1 shrink-0">
+                                <span class="text-[10px] font-bold">日付</span>
+                            </div>
+                            <input type="date" class="flex-1 px-2 outline-none text-xs" x-model="date" aria-label="試合日付" title="試合日付">
+                            <div class="px-2 flex items-center text-[9px] text-gray-600 border-l border-gray-300 shrink-0" x-show="quarterTimes.q1.start">
+                                <span class="font-semibold">試合開始時刻：</span>
+                                <span class="ml-1 font-mono" x-text="quarterTimes.q1.start"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Right Block: Scores (Combined) -->
+                    <div class="flex-shrink-0 flex flex-row min-w-[280px]">
+                        <!-- Quarter Scores -->
+                        <div class="flex flex-col border-r border-gray-500 shrink-0">
+                            <div class="h-6 bg-gray-300 print-bg-gray border-b border-gray-500 flex items-center justify-center text-[10px] font-bold whitespace-nowrap">各 Q ごとのスコア</div>
+                            <div class="flex-1 grid grid-cols-[auto_2.5rem_2.5rem_2.5rem_2.5rem_2.5rem_2.5rem] min-w-[200px]">
+                                <div class="border-b border-r border-gray-400 bg-gray-200 print-bg-gray"></div>
+                                <div class="border-b border-r border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[10px] font-bold">1Q</div>
+                                <div class="border-b border-r border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[10px] font-bold">2Q</div>
+                                <div class="border-b border-r border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[10px] font-bold">3Q</div>
+                                <div class="border-b border-r border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[10px] font-bold">4Q</div>
+                                <div class="border-b border-r border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[10px] font-bold">OT1</div>
+                                <div class="border-b border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[10px] font-bold">OT2</div>
+
+                                <!-- Row 1 (My Team) -->
+                                <div class="border-b border-r border-gray-400 bg-gray-100 print-bg-gray flex items-center justify-center px-1 text-[10px] font-bold">ﾎｰﾑ</div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q1" aria-label="ホームチーム1Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q2" aria-label="ホームチーム2Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q3" aria-label="ホームチーム3Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q4" aria-label="ホームチーム4Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.ot1" aria-label="ホームチームOT1スコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.ot2" aria-label="ホームチームOT2スコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+
+                                <!-- Row 2 (Opponent) -->
+                                <div class="border-r border-gray-400 bg-gray-100 print-bg-gray flex items-center justify-center px-1 text-[10px] font-bold">ｱｳｪｲ</div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q1" aria-label="アウェイチーム1Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q2" aria-label="アウェイチーム2Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q3" aria-label="アウェイチーム3Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q4" aria-label="アウェイチーム4Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.ot1" aria-label="アウェイチームOT1スコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.ot2" aria-label="アウェイチームOT2スコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Final Score -->
+                        <div class="flex flex-col bg-gray-200 print-bg-gray min-w-[6rem] shrink-0">
+                             <div class="h-6 border-b border-gray-500 flex items-center justify-center text-[10px] font-bold">最終スコア</div>
+                             <div class="flex-1 flex items-center justify-center gap-2 p-2">
+                                 <div class="flex flex-col items-center">
+                                     <span class="text-[8px] text-gray-600">ﾎｰﾑ</span>
+                                     <span class="text-xl font-bold leading-none" x-text="calculateTotal(myScore)"></span>
+                                 </div>
+                                 <span class="text-sm font-bold text-gray-500">-</span>
+                                 <div class="flex flex-col items-center">
+                                     <span class="text-[8px] text-gray-600">ｱｳｪｲ</span>
+                                     <span class="text-xl font-bold leading-none" x-text="calculateTotal(opScore)"></span>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Table -->
+            <div class="relative mb-4 print:mb-6 print:mt-6">
+                <!-- ウォーターマーク：現在のチームを大きく表示（スクロールコンテナの外） -->
+                <div 
+                    class="team-watermark print:hidden"
+                    :class="activeTeam === 'home' ? 'team-watermark--home' : 'team-watermark--away'"
+                >
+                    <span x-text="activeTeam === 'home' ? 'HOME' : 'AWAY'"></span>
+                </div>
+                <div class="w-full overflow-x-auto border-2 border-gray-800 bg-white shadow-sm relative z-10">
+                <table class="w-full min-w-[1100px] border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-gray-300 print-bg-gray text-black font-bold">
+                            <th class="border border-gray-500 p-1 w-28" rowspan="2">個人ファウル</th>
+                            <th class="border border-gray-500 p-1 w-10" rowspan="2">出場</th>
+                            <th class="border border-gray-500 p-1 w-8" rowspan="2">No.</th>
+                            <!-- 名前欄の最小幅を少し狭くして、時刻表示エリアに余白を回す -->
+                            <th class="border border-gray-500 p-1 min-w-[60px]" rowspan="2">選手名</th>
+                            
+                            <th class="border border-gray-500 p-0" colspan="4">
+                                <div class="flex items-center justify-between px-0.5">
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.q1.start">
+                                            <button @click="recordQuarterTime('q1', 'start')" class="text-[10px] w-16 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                        </template>
+                                        <template x-if="quarterTimes.q1.start">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q1.start = ''" class="text-[11px] w-16 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.q1.start" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}" placeholder="hh:mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-green-700 font-bold hidden print:inline" x-show="quarterTimes.q1.start" x-text="quarterTimes.q1.start"></span>
+                                    </div>
+                                    <span class="font-bold">1Q</span>
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.q1.end">
+                                            <button @click="recordQuarterTime('q1', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                        </template>
+                                        <template x-if="quarterTimes.q1.end">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q1.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.q1.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-red-700 font-bold hidden print:inline" x-show="quarterTimes.q1.end" x-text="quarterTimes.q1.end"></span>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="border border-gray-500 p-0" colspan="4">
+                                <div class="flex items-center justify-between px-0.5">
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.q2.start">
+                                            <button @click="recordQuarterTime('q2', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                        </template>
+                                        <template x-if="quarterTimes.q2.start">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q2.start = ''" class="text-[11px] w-14 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.q2.start" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-green-700 font-bold hidden print:inline" x-show="quarterTimes.q2.start" x-text="quarterTimes.q2.start"></span>
+                                    </div>
+                                    <span class="font-bold">2Q</span>
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.q2.end">
+                                            <button @click="recordQuarterTime('q2', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                        </template>
+                                        <template x-if="quarterTimes.q2.end">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q2.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.q2.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-red-700 font-bold hidden print:inline" x-show="quarterTimes.q2.end" x-text="quarterTimes.q2.end"></span>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="border border-gray-500 p-0" colspan="4">
+                                <div class="flex items-center justify-between px-0.5">
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.q3.start">
+                                            <button @click="recordQuarterTime('q3', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                        </template>
+                                        <template x-if="quarterTimes.q3.start">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q3.start = ''" class="text-[11px] w-14 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.q3.start" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-green-700 font-bold hidden print:inline" x-show="quarterTimes.q3.start" x-text="quarterTimes.q3.start"></span>
+                                    </div>
+                                    <span class="font-bold">3Q</span>
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.q3.end">
+                                            <button @click="recordQuarterTime('q3', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                        </template>
+                                        <template x-if="quarterTimes.q3.end">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q3.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.q3.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-red-700 font-bold hidden print:inline" x-show="quarterTimes.q3.end" x-text="quarterTimes.q3.end"></span>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="border border-gray-500 p-0" colspan="4">
+                                <div class="flex items-center justify-between px-0.5">
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.q4.start">
+                                            <button @click="recordQuarterTime('q4', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                        </template>
+                                        <template x-if="quarterTimes.q4.start">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q4.start = ''" class="text-[11px] w-14 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.q4.start" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-green-700 font-bold hidden print:inline" x-show="quarterTimes.q4.start" x-text="quarterTimes.q4.start"></span>
+                                    </div>
+                                    <span class="font-bold">4Q</span>
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.q4.end">
+                                            <button @click="recordQuarterTime('q4', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                        </template>
+                                        <template x-if="quarterTimes.q4.end">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q4.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.q4.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-red-700 font-bold hidden print:inline" x-show="quarterTimes.q4.end" x-text="quarterTimes.q4.end"></span>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="border border-gray-500 p-0" colspan="4">
+                                <div class="flex items-center justify-between px-0.5">
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.ot1.start">
+                                            <button @click="recordQuarterTime('ot1', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                        </template>
+                                        <template x-if="quarterTimes.ot1.start">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.ot1.start = ''" class="text-[11px] w-14 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.ot1.start" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-green-700 font-bold hidden print:inline" x-show="quarterTimes.ot1.start" x-text="quarterTimes.ot1.start"></span>
+                                    </div>
+                                    <span class="font-bold">OT</span>
+                                    <div class="flex items-center gap-1">
+                                        <template x-if="!quarterTimes.ot1.end">
+                                            <button @click="recordQuarterTime('ot1', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                        </template>
+                                        <template x-if="quarterTimes.ot1.end">
+                                            <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.ot1.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.ot1.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                        </template>
+                                        <span class="text-[10px] text-red-700 font-bold hidden print:inline" x-show="quarterTimes.ot1.end" x-text="quarterTimes.ot1.end"></span>
+                                    </div>
+                                </div>
+                            </th>
+                            
+                            <th class="border border-gray-500 p-1 w-10" rowspan="2">得点</th>
+                        </tr>
+                        <tr class="bg-gray-200 print-bg-gray text-[9px] text-black font-semibold">
+                            <th class="border border-gray-500 p-0.5 w-7">2P</th><th class="border border-gray-500 p-0.5 w-7">3P</th><th class="border border-gray-500 p-0.5 w-7">FT</th><th class="border border-gray-500 p-0.5 w-7">FTA</th>
+                            <th class="border border-gray-500 p-0.5 w-7">2P</th><th class="border border-gray-500 p-0.5 w-7">3P</th><th class="border border-gray-500 p-0.5 w-7">FT</th><th class="border border-gray-500 p-0.5 w-7">FTA</th>
+                            <th class="border border-gray-500 p-0.5 w-7">2P</th><th class="border border-gray-500 p-0.5 w-7">3P</th><th class="border border-gray-500 p-0.5 w-7">FT</th><th class="border border-gray-500 p-0.5 w-7">FTA</th>
+                            <th class="border border-gray-500 p-0.5 w-7">2P</th><th class="border border-gray-500 p-0.5 w-7">3P</th><th class="border border-gray-500 p-0.5 w-7">FT</th><th class="border border-gray-500 p-0.5 w-7">FTA</th>
+                            <th class="border border-gray-500 p-0.5 w-7">2P</th><th class="border border-gray-500 p-0.5 w-7">3P</th><th class="border border-gray-500 p-0.5 w-7">FT</th><th class="border border-gray-500 p-0.5 w-7">FTA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(player, index) in currentPlayers" :key="player.id">
+                            <!-- 行の高さがファウル時刻の有無で変わらないように固定高さを指定 -->
+                            <tr class="hover:bg-blue-50 h-8 align-middle">
+                                <!-- Fouls -->
+                                <td class="border border-gray-400 p-0.5 text-center whitespace-nowrap align-middle">
+                                    <div class="flex justify-center items-center gap-0.5">
+                                        <template x-for="i in [0, 1, 2, 3, 4]">
+                                            <!-- 個人ファウルの丸／時刻欄：常に同じ高さを確保 -->
+                                            <div class="flex flex-col items-center justify-start gap-0 w-10">
+                                                <div 
+                                                    @click="recordPersonalFoulTime(player, i)"
+                                                    class="w-4 h-4 rounded-full border border-gray-600 cursor-pointer flex items-center justify-center text-[9px] select-none print:pointer-events-none shrink-0 print:w-3 print:h-3 print:text-[7px]"
+                                                    :class="typeof player.fouls[i] === 'boolean' ? (player.fouls[i] ? 'bg-black text-white' : 'bg-white hover:bg-gray-300') : (player.fouls[i].active ? 'bg-black text-white' : 'bg-white hover:bg-gray-300')"
+                                                    x-text="i + 1"
+                                                ></div>
+                                                <!-- 時刻入力用スペースを常に確保（高さ固定） -->
+                                                <div class="h-4 flex items-center justify-center">
+                                                    <input 
+                                                        x-show="typeof player.fouls[i] === 'object' && player.fouls[i].time"
+                                                        type="text" 
+                                                        @click.stop 
+                                                        @blur="if(!$event.target.value) player.fouls[i].time = ''" 
+                                                        class="text-[9px] w-10 px-1 rounded border border-gray-300 bg-gray-50 text-gray-700 font-bold text-center print:hidden leading-tight" 
+                                                        x-model="player.fouls[i].time" 
+                                                        pattern="[0-9]{2}:[0-9]{2}" 
+                                                        placeholder="mm:ss"
+                                                    >
+                                                    <span class="text-[9px] text-gray-700 font-bold hidden print:inline leading-tight" x-show="typeof player.fouls[i] === 'object' && player.fouls[i].time" x-text="player.fouls[i].time"></span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </td>
+
+                                <!-- Participation -->
+                                <td class="border border-gray-400 p-0 text-center align-middle">
+                                    <div class="grid grid-cols-2 grid-rows-2 gap-0 text-[8px] h-8 w-full">
+                                        <button @click="player.participation.q1 = !player.participation.q1" class="flex items-center justify-center border-r border-b border-gray-300" :class="player.participation.q1 ? 'bg-gray-800 text-white' : ''">1</button>
+                                        <button @click="player.participation.q2 = !player.participation.q2" class="flex items-center justify-center border-b border-gray-300" :class="player.participation.q2 ? 'bg-gray-800 text-white' : ''">2</button>
+                                        <button @click="player.participation.q3 = !player.participation.q3" class="flex items-center justify-center border-r border-gray-300" :class="player.participation.q3 ? 'bg-gray-800 text-white' : ''">3</button>
+                                        <button @click="player.participation.q4 = !player.participation.q4" class="flex items-center justify-center" :class="player.participation.q4 ? 'bg-gray-800 text-white' : ''">4</button>
+                                    </div>
+                                </td>
+
+                                <!-- Number -->
+                                <td class="border border-gray-400 p-0">
+                                    <input class="w-full h-full text-center bg-transparent outline-none" x-model="player.number" placeholder="#">
+                                </td>
+
+                                <!-- Name -->
+                                <td class="border border-gray-400 p-0 relative">
+                                    <input class="w-full h-full px-2 bg-transparent outline-none" x-model="player.name">
+                                </td>
+
+                                <!-- Stats by Quarter -->
+                                <!-- Q1 -->
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.pt2"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.pt3"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.ft"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.fta"></td>
+                                <!-- Q2 -->
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.pt2"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.pt3"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.ft"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.fta"></td>
+                                <!-- Q3 -->
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.pt2"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.pt3"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.ft"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.fta"></td>
+                                <!-- Q4 -->
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.pt2"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.pt3"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.ft"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.fta"></td>
+                                <!-- OT -->
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.pt2"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.pt3"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.ft"></td>
+                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.fta"></td>
+
+                                <!-- Total Points (Auto-calculated) -->
+                                <td class="border border-gray-400 p-0 bg-gray-50">
+                                    <span class="w-full h-full flex items-center justify-center font-bold text-sm" x-text="calcPlayerPoints(player)"></span>
+                                </td>
+                            </tr>
+                        </template>
+                        
+                        <!-- Total Row -->
+                        <tr class="bg-gray-300 print-bg-gray font-bold border-t-2 border-gray-600">
+                            <td colspan="4" class="border border-gray-500 p-1 text-right pr-4">合計：</td>
+                            <td colspan="20" class="border border-gray-500 bg-gray-200 print-bg-gray"></td>
+                            <td class="border border-gray-500 text-center text-sm font-bold" x-text="getTotalPoints()"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+
+            <!-- Footer Section: Fouls & Timeouts & Memo -->
+            <div class="flex flex-col lg:flex-row print:flex-row gap-4 mb-2 print:mb-6 print:gap-2 items-stretch">
+                <!-- Left: Fouls & Timeouts Wrapper -->
+                <div class="flex-none w-full lg:w-auto print:w-auto flex flex-col sm:flex-row print:flex-row gap-2 print:gap-1">
+                    
+                    <!-- Team Fouls -->
+                    <div class="border border-gray-500 bg-white w-64 shrink-0">
+                        <div class="flex border-b border-gray-500">
+                            <div class="w-24 p-1 text-xs font-bold border-r border-gray-500 bg-gray-300 print-bg-gray flex items-center justify-center">チームファウル</div>
+                            <div class="flex-1 grid grid-cols-5 text-xs font-bold text-center bg-gray-200 print-bg-gray">
+                                <div class="border-r border-gray-500 p-1">1</div>
+                                <div class="border-r border-gray-500 p-1">2</div>
+                                <div class="border-r border-gray-500 p-1">3</div>
+                                <div class="border-r border-gray-500 p-1">4</div>
+                                <div class="p-1">5</div>
+                            </div>
+                        </div>
+                        <template x-for="(qLabel, i) in ['1Q', '2Q', '3Q', '4Q']">
+                            <div class="flex border-b border-gray-400 last:border-0 h-6">
+                                <div class="w-24 flex items-center justify-center text-xs font-bold border-r border-gray-500 bg-gray-200 print-bg-gray" x-text="qLabel"></div>
+                                <div class="flex-1 grid grid-cols-5">
+                                    <template x-for="num in [1, 2, 3, 4, 5]">
+                                        <button 
+                                            @click="updateTeamFouls(i + 1, num)"
+                                            class="h-full border-r border-gray-500 last:border-r-0 flex items-center justify-center text-[10px]"
+                                            :class="num <= getTeamFouls(i + 1) ? 'bg-red-600 text-white' : 'bg-white hover:bg-gray-100'"
+                                            x-text="num <= getTeamFouls(i + 1) ? 'X' : ''"
+                                        ></button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Timeouts -->
+                    <div class="border border-gray-500 bg-white flex shrink-0 self-start">
+                        <div class="w-24 p-1 text-xs font-bold border-r border-gray-500 bg-gray-300 print-bg-gray flex items-center justify-center">タイムアウト</div>
+                        <div class="flex divide-x divide-gray-400">
+                            <!-- First Half -->
+                            <div class="flex flex-col items-center p-2 justify-center">
+                                <span class="text-[9px] text-gray-700 font-bold mb-1">前半</span>
+                                <div class="flex flex-col gap-0.5 items-center">
+                                    <template x-for="(timeout, idx) in currentTeamState.timeouts.firstHalf" :key="idx">
+                                        <div class="flex items-center gap-1">
+                                            <div @click="recordTimeoutTime(currentTeamState.timeouts.firstHalf, idx)" class="w-4 h-4 border border-gray-600 cursor-pointer shrink-0 print:pointer-events-none" :class="timeout.active ? 'bg-black' : 'bg-white'"></div>
+                                            <template x-if="timeout.time">
+                                                <input type="text" @click.stop @blur="if(!$event.target.value) timeout.time = ''" class="text-[7px] w-9 px-0.5 rounded border border-gray-300 bg-gray-50 text-gray-700 font-bold text-center print:hidden" x-model="timeout.time" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                            </template>
+                                            <span class="text-[7px] text-gray-700 font-bold hidden print:inline" x-show="timeout.time" x-text="timeout.time"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            <!-- Second Half -->
+                            <div class="flex flex-col items-center p-2 justify-center">
+                                <span class="text-[9px] text-gray-700 font-bold mb-1">後半</span>
+                                <div class="flex flex-col gap-0.5 items-center">
+                                    <template x-for="(timeout, idx) in currentTeamState.timeouts.secondHalf" :key="idx">
+                                        <div class="flex items-center gap-1">
+                                            <div @click="recordTimeoutTime(currentTeamState.timeouts.secondHalf, idx)" class="w-4 h-4 border border-gray-600 cursor-pointer shrink-0 print:pointer-events-none" :class="timeout.active ? 'bg-black' : 'bg-white'"></div>
+                                            <template x-if="timeout.time">
+                                                <input type="text" @click.stop @blur="if(!$event.target.value) timeout.time = ''" class="text-[7px] w-9 px-0.5 rounded border border-gray-300 bg-gray-50 text-gray-700 font-bold text-center print:hidden" x-model="timeout.time" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                            </template>
+                                            <span class="text-[7px] text-gray-700 font-bold hidden print:inline" x-show="timeout.time" x-text="timeout.time"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            <!-- OT1 -->
+                            <div class="flex flex-col items-center p-2 justify-center">
+                                <span class="text-[9px] text-gray-700 font-bold mb-1">OT1</span>
+                                <div class="flex items-center gap-1">
+                                    <div @click="recordTimeoutTime(currentTeamState.timeouts.ot1, 0)" class="w-4 h-4 border border-gray-600 cursor-pointer shrink-0 print:pointer-events-none" :class="currentTeamState.timeouts.ot1[0].active ? 'bg-black' : 'bg-white'"></div>
+                                    <template x-if="currentTeamState.timeouts.ot1[0].time">
+                                        <input type="text" @click.stop @blur="if(!$event.target.value) currentTeamState.timeouts.ot1[0].time = ''" class="text-[7px] w-9 px-0.5 rounded border border-gray-300 bg-gray-50 text-gray-700 font-bold text-center print:hidden" x-model="currentTeamState.timeouts.ot1[0].time" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                    </template>
+                                    <span class="text-[7px] text-gray-700 font-bold hidden print:inline" x-show="currentTeamState.timeouts.ot1[0].time" x-text="currentTeamState.timeouts.ot1[0].time"></span>
+                                </div>
+                            </div>
+                            <!-- OT2 -->
+                            <div class="flex flex-col items-center p-2 justify-center">
+                                <span class="text-[9px] text-gray-700 font-bold mb-1">OT2</span>
+                                <div class="flex items-center gap-1">
+                                    <div @click="recordTimeoutTime(currentTeamState.timeouts.ot2, 0)" class="w-4 h-4 border border-gray-600 cursor-pointer shrink-0 print:pointer-events-none" :class="currentTeamState.timeouts.ot2[0].active ? 'bg-black' : 'bg-white'"></div>
+                                    <template x-if="currentTeamState.timeouts.ot2[0].time">
+                                        <input type="text" @click.stop @blur="if(!$event.target.value) currentTeamState.timeouts.ot2[0].time = ''" class="text-[7px] w-9 px-0.5 rounded border border-gray-300 bg-gray-50 text-gray-700 font-bold text-center print:hidden" x-model="currentTeamState.timeouts.ot2[0].time" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
+                                    </template>
+                                    <span class="text-[7px] text-gray-700 font-bold hidden print:inline" x-show="currentTeamState.timeouts.ot2[0].time" x-text="currentTeamState.timeouts.ot2[0].time"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right: Memo Area -->
+                <div class="flex-1 border border-gray-500 bg-white p-1">
+                    <span class="text-[10px] text-gray-700 font-bold block mb-0.5">メモ (ベンチテクニカル、退場など)：</span>
+                    <textarea 
+                        class="w-full h-24 resize-none outline-none text-xs p-1 leading-tight"
+                        x-model="currentTeamState.memo"
+                        aria-label="メモ欄"
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Running Score: 4 Rows (1-160) -->
+            <div class="w-full border-2 border-gray-800 bg-white mb-0 print:border">
+                <!-- Row 1: 1-40 -->
+                <div class="flex border-b border-gray-800 print:border-b">
+                    <div class="w-8 flex-none flex flex-col justify-center items-center border-r border-gray-500 bg-gray-300 print-bg-gray p-0.5">
+                        <span class="text-[8px] font-bold leading-tight">1</span>
+                        <span class="text-[8px] font-bold leading-tight">|</span>
+                        <span class="text-[8px] font-bold leading-tight">40</span>
+                    </div>
+                    <div class="flex-1 overflow-x-auto">
+                        <div class="flex w-full min-w-[1000px] print:min-w-0">
+                             <template x-for="i in 40">
+                                <div class="flex flex-col w-full border-r border-gray-400 last:border-r-0">
+                                    <div class="h-4 border-b border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[9px] font-bold text-gray-800" x-text="i"></div>
+                                    <div class="h-6 border-b border-gray-400">
+                                        <select
+                                            class="w-full h-full text-center text-xs outline-none bg-transparent cursor-pointer appearance-none"
+                                            x-model="teams[activeTeam].runningScore[i].number"
+                                            x-effect="
+                                                (() => {
+                                                    const val = teams[activeTeam].runningScore[i].number || '';
+                                                    const nums = getPlayerNumbers();
+                                                    if (!val || !nums.includes(val)) return;
+                                                    if ($el.value !== val) $el.value = val;
+                                                })()
+                                            "
+                                            :key="activeTeam + '-' + i + '-' + refreshKey"
+                                            @change="if($event.target.value && !teams[activeTeam].runningScore[i].time) teams[activeTeam].runningScore[i].time = getCurrentTime()"
+                                        >
+                                            <option value=""></option>
+                                            <template x-for="num in getPlayerNumbers()" :key="num">
+                                                <option :value="num" x-text="num"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <div class="h-6">
+                                        <input type="text" class="w-full h-full text-center text-[9px] outline-none bg-transparent placeholder-gray-300" x-model="teams[activeTeam].runningScore[i].time">
+                                    </div>
+                                </div>
+                             </template>
+                        </div>
+                    </div>
+                </div>
+                <!-- Row 2: 41-80 -->
+                <div class="flex border-b border-gray-800 print:border-b">
+                    <div class="w-8 flex-none flex flex-col justify-center items-center border-r border-gray-500 bg-gray-300 print-bg-gray p-0.5">
+                        <span class="text-[8px] font-bold leading-tight">41</span>
+                        <span class="text-[8px] font-bold leading-tight">|</span>
+                        <span class="text-[8px] font-bold leading-tight">80</span>
+                    </div>
+                    <div class="flex-1 overflow-x-auto">
+                        <div class="flex w-full min-w-[1000px] print:min-w-0">
+                             <template x-for="i in 40">
+                                <div class="flex flex-col w-full border-r border-gray-400 last:border-r-0">
+                                    <div class="h-4 border-b border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[9px] font-bold text-gray-800" x-text="i + 40"></div>
+                                    <div class="h-6 border-b border-gray-400">
+                                        <select
+                                            class="w-full h-full text-center text-xs outline-none bg-transparent cursor-pointer appearance-none"
+                                            x-model="teams[activeTeam].runningScore[i + 40].number"
+                                            x-effect="
+                                                (() => {
+                                                    const val = teams[activeTeam].runningScore[i + 40].number || '';
+                                                    const nums = getPlayerNumbers();
+                                                    if (!val || !nums.includes(val)) return;
+                                                    if ($el.value !== val) $el.value = val;
+                                                })()
+                                            "
+                                            :key="activeTeam + '-' + (i + 40) + '-' + refreshKey"
+                                            @change="if($event.target.value && !teams[activeTeam].runningScore[i + 40].time) teams[activeTeam].runningScore[i + 40].time = getCurrentTime()"
+                                        >
+                                            <option value=""></option>
+                                            <template x-for="num in getPlayerNumbers()" :key="num">
+                                                <option :value="num" x-text="num"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <div class="h-6">
+                                        <input type="text" class="w-full h-full text-center text-[9px] outline-none bg-transparent placeholder-gray-300" x-model="teams[activeTeam].runningScore[i + 40].time">
+                                    </div>
+                                </div>
+                             </template>
+                        </div>
+                    </div>
+                </div>
+                <!-- Row 3: 81-120 -->
+                <div class="flex border-b border-gray-800 print:border-b">
+                    <div class="w-8 flex-none flex flex-col justify-center items-center border-r border-gray-500 bg-gray-300 print-bg-gray p-0.5">
+                        <span class="text-[8px] font-bold leading-tight">81</span>
+                        <span class="text-[8px] font-bold leading-tight">|</span>
+                        <span class="text-[8px] font-bold leading-tight">120</span>
+                    </div>
+                    <div class="flex-1 overflow-x-auto">
+                        <div class="flex w-full min-w-[1000px] print:min-w-0">
+                             <template x-for="i in 40">
+                                <div class="flex flex-col w-full border-r border-gray-400 last:border-r-0">
+                                    <div class="h-4 border-b border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[9px] font-bold text-gray-800" x-text="i + 80"></div>
+                                    <div class="h-6 border-b border-gray-400">
+                                        <select
+                                            class="w-full h-full text-center text-xs outline-none bg-transparent cursor-pointer appearance-none"
+                                            x-model="teams[activeTeam].runningScore[i + 80].number"
+                                            x-effect="
+                                                (() => {
+                                                    const val = teams[activeTeam].runningScore[i + 80].number || '';
+                                                    const nums = getPlayerNumbers();
+                                                    if (!val || !nums.includes(val)) return;
+                                                    if ($el.value !== val) $el.value = val;
+                                                })()
+                                            "
+                                            :key="activeTeam + '-' + (i + 80) + '-' + refreshKey"
+                                            @change="if($event.target.value && !teams[activeTeam].runningScore[i + 80].time) teams[activeTeam].runningScore[i + 80].time = getCurrentTime()"
+                                        >
+                                            <option value=""></option>
+                                            <template x-for="num in getPlayerNumbers()" :key="num">
+                                                <option :value="num" x-text="num"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <div class="h-6">
+                                        <input type="text" class="w-full h-full text-center text-[9px] outline-none bg-transparent placeholder-gray-300" x-model="teams[activeTeam].runningScore[i + 80].time">
+                                    </div>
+                                </div>
+                             </template>
+                        </div>
+                    </div>
+                </div>
+                <!-- Row 4: 121-160 -->
+                <div class="flex">
+                    <div class="w-8 flex-none flex flex-col justify-center items-center border-r border-gray-500 bg-gray-300 print-bg-gray p-0.5">
+                        <span class="text-[8px] font-bold leading-tight">121</span>
+                        <span class="text-[8px] font-bold leading-tight">|</span>
+                        <span class="text-[8px] font-bold leading-tight">160</span>
+                    </div>
+                    <div class="flex-1 overflow-x-auto">
+                        <div class="flex w-full min-w-[1000px] print:min-w-0">
+                             <template x-for="i in 40">
+                                <div class="flex flex-col w-full border-r border-gray-400 last:border-r-0">
+                                    <div class="h-4 border-b border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[9px] font-bold text-gray-800" x-text="i + 120"></div>
+                                    <div class="h-6 border-b border-gray-400">
+                                        <select
+                                            class="w-full h-full text-center text-xs outline-none bg-transparent cursor-pointer appearance-none"
+                                            x-model="teams[activeTeam].runningScore[i + 120].number"
+                                            x-effect="
+                                                (() => {
+                                                    const val = teams[activeTeam].runningScore[i + 120].number || '';
+                                                    const nums = getPlayerNumbers();
+                                                    if (!val || !nums.includes(val)) return;
+                                                    if ($el.value !== val) $el.value = val;
+                                                })()
+                                            "
+                                            :key="activeTeam + '-' + (i + 120) + '-' + refreshKey"
+                                            @change="if($event.target.value && !teams[activeTeam].runningScore[i + 120].time) teams[activeTeam].runningScore[i + 120].time = getCurrentTime()"
+                                        >
+                                            <option value=""></option>
+                                            <template x-for="num in getPlayerNumbers()" :key="num">
+                                                <option :value="num" x-text="num"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <div class="h-6">
+                                        <input type="text" class="w-full h-full text-center text-[9px] outline-none bg-transparent placeholder-gray-300" x-model="teams[activeTeam].runningScore[i + 120].time">
+                                    </div>
+                                </div>
+                             </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center text-xs text-gray-400 no-print">
+                © 2025 ofbita / Basketball Manual
+            </div>
+            </div>
+        </div>
+        <!-- ▲スコアブック本体終了 -->
+
+        <!-- チーム切り替え固定ボタン（左：HOME） -->
+        <button 
+            @click="activeTeam = 'home'; syncRunningScoreSelects('home')"
+            class="team-switch-btn team-switch-btn--home no-print"
+            :class="{ 'active': activeTeam === 'home' }"
+        >
+            ◀ HOME
+        </button>
+
+        <!-- チーム切り替え固定ボタン（右：AWAY） -->
+        <button 
+            @click="activeTeam = 'away'; syncRunningScoreSelects('away')"
+            class="team-switch-btn team-switch-btn--away no-print"
+            :class="{ 'active': activeTeam === 'away' }"
+        >
+            AWAY ▶
+        </button>
+
+        <!-- 全画面モード切り替えボタン -->
+        <button class="fullscreen-btn no-print" onclick="toggleFullscreenMode()">
+            <span id="fullscreen-icon">⛶</span>
+            <span id="fullscreen-text">全画面表示</span>
+        </button>
+    </div>
+
+    <script>
+        // 元の scoresheet() ロジックをベースに、スクショ用メソッドを追加
+        function scoresheet() {
+            // プレイヤー配列を生成するヘルパー
+            function createPlayers(prefix = 'p') {
+                return Array.from({ length: 15 }, (_, i) => ({
+                    id: `${prefix}-${i}`,
+                    number: '',
+                    name: '',
+                    fouls: [{ active: false, time: '' }, { active: false, time: '' }, { active: false, time: '' }, { active: false, time: '' }, { active: false, time: '' }],
+                    participation: { q1: false, q2: false, q3: false, q4: false },
+                    quarterStats: {
+                        q1: { pt2: '', pt3: '', ft: '', fta: '' },
+                        q2: { pt2: '', pt3: '', ft: '', fta: '' },
+                        q3: { pt2: '', pt3: '', ft: '', fta: '' },
+                        q4: { pt2: '', pt3: '', ft: '', fta: '' },
+                        ot: { pt2: '', pt3: '', ft: '', fta: '' },
+                    }
+                }));
+            }
+
+            // チームステート初期値を生成するヘルパー
+            function createTeamState() {
+                return {
+                    name: '',
+                    memo: '',
+                    teamFouls: { q1: 0, q2: 0, q3: 0, q4: 0 },
+                    timeouts: {
+                        firstHalf: [{ active: false, time: '' }, { active: false, time: '' }],
+                        secondHalf: [{ active: false, time: '' }, { active: false, time: '' }, { active: false, time: '' }],
+                        ot1: [{ active: false, time: '' }],
+                        ot2: [{ active: false, time: '' }]
+                    }
+                };
+            }
+
+            // ランニングスコア初期値を生成するヘルパー
+            function createRunningScore() {
+                const scores = {};
+                for(let i = 1; i <= 160; i++) {
+                    scores[i] = { number: '', time: '' };
+                }
+                return scores;
+            }
+
+            return {
+                // ★追加：再描画トリガー
+                refreshKey: 0,
+                myTeamName: '',
+                opponentTeamName: '',
+                venue: '',
+                date: '',
+                
+                myScore: { q1: '', q2: '', q3: '', q4: '', ot1: '', ot2: '' },
+                opScore: { q1: '', q2: '', q3: '', q4: '', ot1: '', ot2: '' },
+            
+                quarterTimes: {
+                    q1: { start: '', end: '' },
+                    q2: { start: '', end: '' },
+                    q3: { start: '', end: '' },
+                    q4: { start: '', end: '' },
+                    ot1: { start: '', end: '' },
+                    ot2: { start: '', end: '' }
+                },
+
+                // 現在表示中のチーム ('home' or 'away')
+                activeTeam: 'home',
+            
+                // 両チームのデータを管理
+                teams: {
+                    home: {
+                        players: createPlayers('home'),
+                        teamState: createTeamState(),
+                        runningScore: createRunningScore()
+                    },
+                    away: {
+                        players: createPlayers('away'),
+                        teamState: createTeamState(),
+                        runningScore: createRunningScore()
+                    }
+                },
+
+                // 現在のチームのプレイヤーを取得
+                get currentPlayers() {
+                    return this.teams[this.activeTeam].players;
+                },
+
+                // 現在のチームのステートを取得
+                get currentTeamState() {
+                    return this.teams[this.activeTeam].teamState;
+                },
+
+                // 現在のチームのランニングスコアを取得
+                get currentRunningScore() {
+                    return this.teams[this.activeTeam].runningScore;
+                },
+            
+                // Helpers
+                calculateTotal(scores) {
+                    const q1 = parseInt(scores.q1) || 0;
+                    const q2 = parseInt(scores.q2) || 0;
+                    const q3 = parseInt(scores.q3) || 0;
+                    const q4 = parseInt(scores.q4) || 0;
+                    const ot1 = parseInt(scores.ot1) || 0;
+                    const ot2 = parseInt(scores.ot2) || 0;
+                    return q1 + q2 + q3 + q4 + ot1 + ot2;
+                },
+            
+                getCurrentTime(isGameStart = false) {
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    return isGameStart ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`;
+                },
+            
+                recordQuarterTime(quarter, type) {
+                    const isGameStart = quarter === 'q1' && type === 'start';
+                    this.quarterTimes[quarter][type] = this.getCurrentTime(isGameStart);
+                },
+            
+                recordTimeoutTime(timeoutArray, index) {
+                    if (!timeoutArray || !timeoutArray[index]) return;
+                    
+                    if (typeof timeoutArray[index] === 'boolean') {
+                        timeoutArray[index] = { active: timeoutArray[index], time: '' };
+                    }
+                    
+                    const timeout = timeoutArray[index];
+                    if (!timeout || typeof timeout !== 'object') return;
+                    
+                    timeout.active = !timeout.active;
+                    if (timeout.active && !timeout.time) {
+                        timeout.time = this.getCurrentTime(false);
+                    }
+                },
+            
+                recordPersonalFoulTime(player, index) {
+                    if (!player || !player.fouls || !player.fouls[index]) return;
+                    
+                    if (typeof player.fouls[index] === 'boolean') {
+                        player.fouls[index] = { active: player.fouls[index], time: '' };
+                    }
+                    
+                    const foul = player.fouls[index];
+                    if (!foul || typeof foul !== 'object') return;
+                    
+                    foul.active = !foul.active;
+                    if (foul.active && !foul.time) {
+                        foul.time = this.getCurrentTime(false);
+                    }
+                },
+            
+                updateTeamFouls(q, val) {
+                    const key = `q${q}`;
+                    if (this.currentTeamState.teamFouls[key] === val) {
+                        this.currentTeamState.teamFouls[key] = 0;
+                    } else {
+                        this.currentTeamState.teamFouls[key] = val;
+                    }
+                },
+            
+                getTeamFouls(q) {
+                    return this.currentTeamState.teamFouls[`q${q}`];
+                },
+            
+                getPlayerNumbers() {
+                    return this.currentPlayers
+                        .filter(p => p.number && p.number.trim() !== '')
+                        .map(p => p.number);
+                },
+            
+                calcPlayerPoints(player) {
+                    let total = 0;
+                    const quarters = ['q1', 'q2', 'q3', 'q4', 'ot'];
+                    quarters.forEach(q => {
+                        const stats = player.quarterStats[q];
+                        total += (parseInt(stats.pt2) || 0) * 2;
+                        total += (parseInt(stats.pt3) || 0) * 3;
+                        total += (parseInt(stats.ft) || 0) * 1;
+                    });
+                    return total || '';
+                },
+            
+                getTotalPoints() {
+                    let total = 0;
+                    this.currentPlayers.forEach(p => {
+                        const pts = this.calcPlayerPoints(p);
+                        total += pts ? parseInt(pts) : 0;
+                    });
+                    return total || '';
+                },
+            
+                // ランニングスコアの <select> を runningScore の値で同期する共通ヘルパー
+                syncRunningScoreSelects(teamKey = this.activeTeam) {
+                    this.$nextTick(() => {
+                        const selects = document.querySelectorAll('select[x-model*="runningScore"]');
+                        selects.forEach((s, idx) => {
+                            const i = idx + 1; // 1〜160
+                            const entry = this.teams[teamKey].runningScore[i];
+                            if (entry && entry.number && entry.number.trim() !== '') {
+                                s.value = entry.number;
+                            } else {
+                                s.value = '';
+                            }
+                        });
+                    });
+                },
+            
+                isResetting: false,
+
+                // タイムアウトのフォーマットを修正するヘルパー
+                migrateTimeouts(timeouts) {
+                    if (!timeouts) return;
+                    ['firstHalf', 'secondHalf', 'ot1', 'ot2'].forEach(period => {
+                        if (Array.isArray(timeouts[period]) && timeouts[period].length > 0 && typeof timeouts[period][0] === 'boolean') {
+                            timeouts[period] = timeouts[period].map(active => ({ active, time: '' }));
+                        }
+                    });
+                },
+
+                // プレイヤーファウルのフォーマットを修正するヘルパー
+                migratePlayerFouls(players) {
+                    if (!Array.isArray(players)) return;
+                    players.forEach(player => {
+                        if (player.fouls && Array.isArray(player.fouls) && player.fouls.length > 0 && typeof player.fouls[0] === 'boolean') {
+                            player.fouls = player.fouls.map(active => ({ active, time: '' }));
+                        }
+                    });
+                },
+            
+                init() {
+                    const saved = localStorage.getItem('basketball-scoresheet-v1');
+                    if (saved) {
+                        try {
+                            const data = JSON.parse(saved);
+
+                            // 基本プロパティの復元（memoとrunningScoreはteamsに含まれるため除外）
+                            ['myTeamName', 'opponentTeamName', 'venue', 'date', 'myScore', 'opScore', 'quarterTimes', 'activeTeam'].forEach(key => {
+                                if (data[key] !== undefined) {
+                                    this[key] = data[key];
+                                }
+                            });
+
+                            // 新しいデータ構造（teams）がある場合
+                            if (data.teams) {
+                                this.teams = data.teams;
+                                // タイムアウトとファウルのマイグレーション、runningScoreの初期化
+                                ['home', 'away'].forEach(team => {
+                                    if (this.teams[team]) {
+                                        if (this.teams[team].teamState && this.teams[team].teamState.timeouts) {
+                                            this.migrateTimeouts(this.teams[team].teamState.timeouts);
+                                        }
+                                        if (this.teams[team].players) {
+                                            this.migratePlayerFouls(this.teams[team].players);
+                                        }
+                                        // runningScoreがない場合は初期化
+                                        if (!this.teams[team].runningScore) {
+                                            this.teams[team].runningScore = createRunningScore();
+                                        }
+                                        // memoがない場合は初期化
+                                        if (!this.teams[team].teamState.memo) {
+                                            this.teams[team].teamState.memo = '';
+                                        }
+                                    }
+                                });
+                            }
+                            // 旧データ構造（players, teamState）からのマイグレーション
+                            else if (data.players || data.teamState) {
+                                // 旧データをホームチームに移行
+                                if (data.players) {
+                                    this.migratePlayerFouls(data.players);
+                                    this.teams.home.players = data.players;
+                                }
+                                if (data.teamState) {
+                                    if (data.teamState.timeouts) {
+                                        this.migrateTimeouts(data.teamState.timeouts);
+                                    }
+                                    this.teams.home.teamState = data.teamState;
+                                }
+                                // 旧runningScoreがあればホームチームに移行
+                                if (data.runningScore) {
+                                    this.teams.home.runningScore = data.runningScore;
+                                }
+                            }
+                            
+                            // 旧データ構造のmemoがあればホームチームに移行（後方互換性）
+                            if (data.memo && (!data.teams || !data.teams.home || !data.teams.home.teamState || !data.teams.home.teamState.memo)) {
+                                if (!this.teams.home.teamState.memo) {
+                                    this.teams.home.teamState.memo = data.memo;
+                                }
+                            }
+                        } catch (e) {
+                            console.error('Failed to load data', e);
+                        }
+                    }
+            
+                    setInterval(() => {
+                        this.saveData();
+                    }, 3000);
+            
+                    window.addEventListener('beforeunload', () => {
+                        this.saveData();
+                    });
+
+                    // ★追加：復元が終わったあとに refreshKey をインクリメント
+                    this.refreshKey++;
+                    this.syncRunningScoreSelects(this.activeTeam);
+                },
+            
+                saveData() {
+                    if (this.isResetting) return;
+                    const dataToSave = {
+                        myTeamName: this.myTeamName,
+                        opponentTeamName: this.opponentTeamName,
+                        venue: this.venue,
+                        date: this.date,
+                        myScore: this.myScore,
+                        opScore: this.opScore,
+                        teams: this.teams,
+                        activeTeam: this.activeTeam,
+                        quarterTimes: this.quarterTimes
+                    };
+                    localStorage.setItem('basketball-scoresheet-v1', JSON.stringify(dataToSave));
+                },
+            
+                clearData() {
+                    if(confirm('入力データを全て消去してリセットしますか？\nこの操作は取り消せません。')) {
+                        this.isResetting = true;
+                        localStorage.removeItem('basketball-scoresheet-v1');
+                        location.reload();
+                    }
+                },
+
+                // --- JSON Export / Import 機能 ---
+
+                // 現在の状態をJSONファイルとしてダウンロード（バックアップ/テンプレート用）
+                exportJSON() {
+                    const dataToExport = {
+                        myTeamName: this.myTeamName,
+                        opponentTeamName: this.opponentTeamName,
+                        venue: this.venue,
+                        date: this.date,
+                        myScore: this.myScore,
+                        opScore: this.opScore,
+                        teams: this.teams,
+                        activeTeam: this.activeTeam,
+                        quarterTimes: this.quarterTimes
+                    };
+
+                    const json = JSON.stringify(dataToExport, null, 2);
+                    const blob = new Blob([json], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `basketball_scorebook_${this.date || 'template'}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                },
+
+                // Import ボタンから隠し input[type=file] を開く
+                triggerImport() {
+                    const input = document.getElementById('import-file');
+                    if (input) {
+                        input.click();
+                    }
+                },
+
+                // JSONファイルを読み込んで状態を復元
+                importJSON(event) {
+                    const file = event.target.files && event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const text = e.target?.result;
+                            if (!text || typeof text !== 'string') {
+                                throw new Error('Empty file');
+                            }
+
+                            const data = JSON.parse(text);
+
+                            // 基本プロパティの復元（memoとrunningScoreはteamsに含まれるため除外）
+                            ['myTeamName', 'opponentTeamName', 'venue', 'date', 'myScore', 'opScore', 'quarterTimes', 'activeTeam'].forEach(key => {
+                                if (data[key] !== undefined) {
+                                    this[key] = data[key];
+                                }
+                            });
+
+                            // 新しいデータ構造（teams）がある場合
+                            if (data.teams) {
+                                this.teams = data.teams;
+                                // タイムアウトとファウルのマイグレーション、runningScoreの初期化
+                                ['home', 'away'].forEach(team => {
+                                    if (this.teams[team]) {
+                                        if (this.teams[team].teamState && this.teams[team].teamState.timeouts) {
+                                            this.migrateTimeouts(this.teams[team].teamState.timeouts);
+                                        }
+                                        if (this.teams[team].players) {
+                                            this.migratePlayerFouls(this.teams[team].players);
+                                        }
+                                        // runningScoreがない場合は初期化
+                                        if (!this.teams[team].runningScore) {
+                                            this.teams[team].runningScore = createRunningScore();
+                                        }
+                                        // memoがない場合は初期化
+                                        if (!this.teams[team].teamState.memo) {
+                                            this.teams[team].teamState.memo = '';
+                                        }
+                                    }
+                                });
+                            }
+                            // 旧データ構造（players, teamState）からのマイグレーション
+                            else if (data.players || data.teamState) {
+                                // 旧データをホームチームに移行
+                                if (data.players) {
+                                    this.migratePlayerFouls(data.players);
+                                    this.teams.home.players = data.players;
+                                }
+                                if (data.teamState) {
+                                    if (data.teamState.timeouts) {
+                                        this.migrateTimeouts(data.teamState.timeouts);
+                                    }
+                                    this.teams.home.teamState = data.teamState;
+                                }
+                                // 旧runningScoreがあればホームチームに移行
+                                if (data.runningScore) {
+                                    this.teams.home.runningScore = data.runningScore;
+                                }
+                            }
+                            
+                            // 旧データ構造のmemoがあればホームチームに移行（後方互換性）
+                            if (data.memo && (!data.teams || !data.teams.home || !data.teams.home.teamState || !data.teams.home.teamState.memo)) {
+                                if (!this.teams.home.teamState.memo) {
+                                    this.teams.home.teamState.memo = data.memo;
+                                }
+                            }
+
+                            // LocalStorage へも保存
+                            this.saveData();
+                            // ★追加：インポート直後の再描画を安定させるため
+                            this.refreshKey++;
+                            this.syncRunningScoreSelects(this.activeTeam);
+                            alert('JSONファイルからスコアシートを読み込みました。');
+                        } catch (err) {
+                            console.error(err);
+                            alert('JSONファイルの読み込みに失敗しました。ファイル内容を確認してください。');
+                        } finally {
+                            // 同じファイルを再度選択できるようにリセット
+                            event.target.value = '';
+                        }
+                    };
+
+                    reader.readAsText(file, 'utf-8');
+                }
+            }
+        }
+
+        // ブラウザ標準の Fullscreen API を使って全画面を切り替え
+        function toggleFullscreenMode() {
+            const icon = document.getElementById('fullscreen-icon');
+            const text = document.getElementById('fullscreen-text');
+
+            // まだ全画面でなければ全画面にする
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(function () {
+                    icon.textContent = '✕';
+                    text.textContent = '元に戻す';
+                }).catch(function (err) {
+                    console.error('Fullscreen error:', err);
+                });
+            } else {
+                // 全画面中なら解除する
+                document.exitFullscreen().then(function () {
+                    icon.textContent = '⛶';
+                    text.textContent = '全画面表示';
+                }).catch(function (err) {
+                    console.error('Exit fullscreen error:', err);
+                });
+            }
+        }
+
+        // 全画面状態が変更されたときにボタン表示を同期
+        document.addEventListener('fullscreenchange', function () {
+            const icon = document.getElementById('fullscreen-icon');
+            const text = document.getElementById('fullscreen-text');
+
+            if (document.fullscreenElement) {
+                icon.textContent = '✕';
+                text.textContent = '元に戻す';
+            } else {
+                icon.textContent = '⛶';
+                text.textContent = '全画面表示';
+            }
+        });
+    </script>
+</body>
+</html>
+
+
