@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.0
+Stable Tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,10 +71,19 @@ Yes. The scorebook auto-saves to your browser's LocalStorage every time you make
 
 == Changelog ==
 
+= 1.0.1 =
+* Fixed: Properly enqueue CSS and JavaScript files using wp_enqueue_style() and wp_enqueue_script()
+* Fixed: Updated function prefixes to meet WordPress.org requirements (BSB_ to BASKSC_)
+* Added: Documentation for third-party library (Alpine.js) in readme
+* Improved: Code structure following WordPress coding standards
+
 = 1.0.0 =
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Minor fixes and improvements. Please update to ensure proper asset loading, naming consistency, and up-to-date documentation.
 
 = 1.0.0 =
 First stable release with timestamp recording and PDF export features.
