@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -298,44 +298,44 @@
                             <button 
                             @click="clearData()"
                             class="bsb-btn bsb-btn--reset"
-                            title="全部消してまっさらな用紙にする"
+                            title="Clear all data and reset to a blank sheet"
                         >
                             <span class="bsb-btn-icon">↺</span>
-                            <span class="bsb-btn-label">リセット</span>
+                            <span class="bsb-btn-label">Reset</span>
                         </button>
 
                         <button 
                             @click="exportJSON()"
                             class="bsb-btn bsb-btn--export"
-                            title="今のスコアシートを保存（テンプレート / バックアップ）"
+                            title="Save current scoresheet (template / backup)"
                         >
                             <span class="bsb-btn-icon">📤</span>
-                            <span class="bsb-btn-label">バックアップ/書出</span>
+                            <span class="bsb-btn-label">Backup/Export</span>
                         </button>
                         <button 
                             @click="triggerImport()"
                             class="bsb-btn bsb-btn--import"
-                            title="前に保存したスコアシートをロードする"
+                            title="Load previously saved scoresheet"
                         >
                             <span class="bsb-btn-icon">📥</span>
-                            <span class="bsb-btn-label">リストア/読込</span>
+                            <span class="bsb-btn-label">Restore/Import</span>
                         </button>
 
                         <button 
                             @click="window.print()"
                             class="bsb-btn bsb-btn--print"
-                            title="スコアシートだけをA4ヨコで印刷 / PDF保存"
+                            title="Print scoresheet only in A4 landscape / Save as PDF"
                         >
                             <span class="bsb-btn-icon">🖨️</span>
-                            <span class="bsb-btn-label">印刷 / PDF</span>
+                            <span class="bsb-btn-label">Print / PDF</span>
                         </button>
                         <button 
                             @click="window.open('https://doc778.com/help-scorebook', '_blank')"
                             class="bsb-btn bsb-btn--help"
-                            title="使い方を見る"
+                            title="View instructions"
                         >
                             <span class="bsb-btn-icon">❓</span>
-                            <span class="bsb-btn-label">使い方</span>
+                            <span class="bsb-btn-label">Help</span>
                         </button>
                     </div>
                 </div>
@@ -345,7 +345,7 @@
             <div class="border-2 border-gray-800 p-2 mb-4 print:mb-1 bg-white">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 print:mb-1 print:flex-row print:justify-between">
                     <h1 class="bsb-logo-title print:text-xl">
-                        Basketball Scorebook <span class="text-lg font-normal ml-2 text-gray-600">タイム式</span>
+                        Basketball Scorebook <span class="text-lg font-normal ml-2 text-gray-600">Time-based</span>
                     </h1>
                     <div class="text-sm text-gray-500 font-mono print:text-xs flex items-center gap-1 print:ml-auto">
                         <a href="https://doc778.com" target="_blank" rel="noopener noreferrer" class="print:pointer-events-none">
@@ -360,15 +360,15 @@
                     <div class="flex-1 border-b sm:border-b-0 sm:border-r border-gray-500 flex flex-col flex-shrink-0">
                         <div class="flex-1 border-b border-gray-500 flex items-stretch">
                             <div class="w-16 flex items-center justify-center border-r border-gray-500 bg-white p-1 shrink-0">
-                                <span class="text-[10px] font-bold">ﾎｰﾑﾁｰﾑ名</span>
+                                <span class="text-[10px] font-bold">Home Team</span>
                             </div>
-                            <input type="text" class="flex-1 px-2 outline-none font-bold text-sm" x-model="myTeamName" aria-label="ホームチーム名" title="ホームチーム名">
+                            <input type="text" class="flex-1 px-2 outline-none font-bold text-sm" x-model="myTeamName" aria-label="Home Team Name" title="Home Team Name">
                         </div>
                         <div class="flex-1 flex items-stretch">
                             <div class="w-16 flex items-center justify-center border-r border-gray-500 bg-white p-1 shrink-0">
-                                <span class="text-[10px] font-bold">ｱｳｪｲﾁｰﾑ名</span>
+                                <span class="text-[10px] font-bold">Away Team</span>
                             </div>
-                            <input type="text" class="flex-1 px-2 outline-none font-bold text-sm" x-model="opponentTeamName" aria-label="アウェイチーム名" title="アウェイチーム名">
+                            <input type="text" class="flex-1 px-2 outline-none font-bold text-sm" x-model="opponentTeamName" aria-label="Away Team Name" title="Away Team Name">
                         </div>
                     </div>
 
@@ -376,17 +376,17 @@
                     <div class="flex-1 border-b sm:border-b-0 sm:border-r border-gray-500 flex flex-col flex-shrink-0">
                         <div class="flex-1 border-b border-gray-500 flex items-stretch">
                             <div class="w-12 flex items-center justify-center border-r border-gray-500 bg-white p-1 shrink-0">
-                                <span class="text-[10px] font-bold">会場</span>
+                                <span class="text-[10px] font-bold">Venue</span>
                             </div>
-                            <input type="text" class="flex-1 px-2 outline-none text-xs" x-model="venue" aria-label="会場名" title="会場名">
+                            <input type="text" class="flex-1 px-2 outline-none text-xs" x-model="venue" aria-label="Venue Name" title="Venue Name">
                         </div>
                         <div class="flex-1 flex items-stretch">
                             <div class="w-12 flex items-center justify-center border-r border-gray-500 bg-white p-1 shrink-0">
-                                <span class="text-[10px] font-bold">日付</span>
+                                <span class="text-[10px] font-bold">Date</span>
                             </div>
-                            <input type="date" class="flex-1 px-2 outline-none text-xs" x-model="date" aria-label="試合日付" title="試合日付">
+                            <input type="date" class="flex-1 px-2 outline-none text-xs" x-model="date" aria-label="Game Date" title="Game Date">
                             <div class="px-2 flex items-center text-[9px] text-gray-600 border-l border-gray-300 shrink-0" x-show="quarterTimes.q1.start">
-                                <span class="font-semibold">試合開始時刻：</span>
+                                <span class="font-semibold">Game Start Time:</span>
                                 <span class="ml-1 font-mono" x-text="quarterTimes.q1.start"></span>
                             </div>
                         </div>
@@ -396,7 +396,7 @@
                     <div class="flex-shrink-0 flex flex-row min-w-[280px]">
                         <!-- Quarter Scores -->
                         <div class="flex flex-col border-r border-gray-500 shrink-0">
-                            <div class="h-6 bg-gray-300 print-bg-gray border-b border-gray-500 flex items-center justify-center text-[10px] font-bold whitespace-nowrap">各 Q ごとのスコア</div>
+                            <div class="h-6 bg-gray-300 print-bg-gray border-b border-gray-500 flex items-center justify-center text-[10px] font-bold whitespace-nowrap">Score by Quarter</div>
                             <div class="flex-1 grid grid-cols-[auto_2.5rem_2.5rem_2.5rem_2.5rem_2.5rem_2.5rem] min-w-[200px]">
                                 <div class="border-b border-r border-gray-400 bg-gray-200 print-bg-gray"></div>
                                 <div class="border-b border-r border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[10px] font-bold">1Q</div>
@@ -407,36 +407,36 @@
                                 <div class="border-b border-gray-400 bg-gray-200 print-bg-gray flex items-center justify-center text-[10px] font-bold">OT2</div>
 
                                 <!-- Row 1 (My Team) -->
-                                <div class="border-b border-r border-gray-400 bg-gray-100 print-bg-gray flex items-center justify-center px-1 text-[10px] font-bold">ﾎｰﾑ</div>
-                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q1" aria-label="ホームチーム1Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q2" aria-label="ホームチーム2Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q3" aria-label="ホームチーム3Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q4" aria-label="ホームチーム4Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.ot1" aria-label="ホームチームOT1スコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-b border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.ot2" aria-label="ホームチームOT2スコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-r border-gray-400 bg-gray-100 print-bg-gray flex items-center justify-center px-1 text-[10px] font-bold">Home</div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q1" aria-label="Home Team Q1 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q2" aria-label="Home Team Q2 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q3" aria-label="Home Team Q3 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.q4" aria-label="Home Team Q4 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.ot1" aria-label="Home Team OT1 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-b border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="myScore.ot2" aria-label="Home Team OT2 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
 
                                 <!-- Row 2 (Opponent) -->
-                                <div class="border-r border-gray-400 bg-gray-100 print-bg-gray flex items-center justify-center px-1 text-[10px] font-bold">ｱｳｪｲ</div>
-                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q1" aria-label="アウェイチーム1Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q2" aria-label="アウェイチーム2Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q3" aria-label="アウェイチーム3Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q4" aria-label="アウェイチーム4Qスコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.ot1" aria-label="アウェイチームOT1スコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
-                                <div class="border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.ot2" aria-label="アウェイチームOT2スコア" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-r border-gray-400 bg-gray-100 print-bg-gray flex items-center justify-center px-1 text-[10px] font-bold">Away</div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q1" aria-label="Away Team Q1 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q2" aria-label="Away Team Q2 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q3" aria-label="Away Team Q3 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.q4" aria-label="Away Team Q4 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-r border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.ot1" aria-label="Away Team OT1 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
+                                <div class="border-gray-400"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center text-sm font-bold bg-transparent outline-none" x-model="opScore.ot2" aria-label="Away Team OT2 Score" @input="$el.value = $el.value.replace(/[^0-9]/g, '')"></div>
                             </div>
                         </div>
                         
                         <!-- Final Score -->
                         <div class="flex flex-col bg-gray-200 print-bg-gray min-w-[6rem] shrink-0">
-                             <div class="h-6 border-b border-gray-500 flex items-center justify-center text-[10px] font-bold">最終スコア</div>
+                             <div class="h-6 border-b border-gray-500 flex items-center justify-center text-[10px] font-bold">Final Score</div>
                              <div class="flex-1 flex items-center justify-center gap-2 p-2">
                                  <div class="flex flex-col items-center">
-                                     <span class="text-[8px] text-gray-600">ﾎｰﾑ</span>
+                                     <span class="text-[8px] text-gray-600">Home</span>
                                      <span class="text-xl font-bold leading-none" x-text="calculateTotal(myScore)"></span>
                                  </div>
                                  <span class="text-sm font-bold text-gray-500">-</span>
                                  <div class="flex flex-col items-center">
-                                     <span class="text-[8px] text-gray-600">ｱｳｪｲ</span>
+                                     <span class="text-[8px] text-gray-600">Away</span>
                                      <span class="text-xl font-bold leading-none" x-text="calculateTotal(opScore)"></span>
                                  </div>
                              </div>
@@ -458,17 +458,17 @@
                 <table class="w-full min-w-[1100px] border-collapse text-xs">
                     <thead>
                         <tr class="bg-gray-300 print-bg-gray text-black font-bold">
-                            <th class="border border-gray-500 p-1 w-28" rowspan="2">個人ファウル</th>
-                            <th class="border border-gray-500 p-1 w-10" rowspan="2">出場</th>
+                            <th class="border border-gray-500 p-1 w-28" rowspan="2">Personal Fouls</th>
+                            <th class="border border-gray-500 p-1 w-10" rowspan="2">Played</th>
                             <th class="border border-gray-500 p-1 w-8" rowspan="2">No.</th>
                             <!-- 名前欄の最小幅を少し狭くして、時刻表示エリアに余白を回す -->
-                            <th class="border border-gray-500 p-1 min-w-[60px]" rowspan="2">選手名</th>
+                            <th class="border border-gray-500 p-1 min-w-[60px]" rowspan="2">Player Name</th>
                             
                             <th class="border border-gray-500 p-0" colspan="4">
                                 <div class="flex items-center justify-between px-0.5">
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.q1.start">
-                                            <button @click="recordQuarterTime('q1', 'start')" class="text-[10px] w-16 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                            <button @click="recordQuarterTime('q1', 'start')" class="text-[10px] w-16 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">Start</button>
                                         </template>
                                         <template x-if="quarterTimes.q1.start">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q1.start = ''" class="text-[11px] w-16 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.q1.start" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}" placeholder="hh:mm:ss">
@@ -478,7 +478,7 @@
                                     <span class="font-bold">1Q</span>
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.q1.end">
-                                            <button @click="recordQuarterTime('q1', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                            <button @click="recordQuarterTime('q1', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">End</button>
                                         </template>
                                         <template x-if="quarterTimes.q1.end">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q1.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.q1.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
@@ -491,7 +491,7 @@
                                 <div class="flex items-center justify-between px-0.5">
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.q2.start">
-                                            <button @click="recordQuarterTime('q2', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                            <button @click="recordQuarterTime('q2', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">Start</button>
                                         </template>
                                         <template x-if="quarterTimes.q2.start">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q2.start = ''" class="text-[11px] w-14 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.q2.start" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
@@ -501,7 +501,7 @@
                                     <span class="font-bold">2Q</span>
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.q2.end">
-                                            <button @click="recordQuarterTime('q2', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                            <button @click="recordQuarterTime('q2', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">End</button>
                                         </template>
                                         <template x-if="quarterTimes.q2.end">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q2.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.q2.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
@@ -514,7 +514,7 @@
                                 <div class="flex items-center justify-between px-0.5">
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.q3.start">
-                                            <button @click="recordQuarterTime('q3', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                            <button @click="recordQuarterTime('q3', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">Start</button>
                                         </template>
                                         <template x-if="quarterTimes.q3.start">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q3.start = ''" class="text-[11px] w-14 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.q3.start" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
@@ -524,7 +524,7 @@
                                     <span class="font-bold">3Q</span>
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.q3.end">
-                                            <button @click="recordQuarterTime('q3', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                            <button @click="recordQuarterTime('q3', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">End</button>
                                         </template>
                                         <template x-if="quarterTimes.q3.end">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q3.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.q3.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
@@ -537,7 +537,7 @@
                                 <div class="flex items-center justify-between px-0.5">
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.q4.start">
-                                            <button @click="recordQuarterTime('q4', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                            <button @click="recordQuarterTime('q4', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">Start</button>
                                         </template>
                                         <template x-if="quarterTimes.q4.start">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q4.start = ''" class="text-[11px] w-14 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.q4.start" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
@@ -547,7 +547,7 @@
                                     <span class="font-bold">4Q</span>
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.q4.end">
-                                            <button @click="recordQuarterTime('q4', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                            <button @click="recordQuarterTime('q4', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">End</button>
                                         </template>
                                         <template x-if="quarterTimes.q4.end">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.q4.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.q4.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
@@ -560,7 +560,7 @@
                                 <div class="flex items-center justify-between px-0.5">
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.ot1.start">
-                                            <button @click="recordQuarterTime('ot1', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">開始</button>
+                                            <button @click="recordQuarterTime('ot1', 'start')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">Start</button>
                                         </template>
                                         <template x-if="quarterTimes.ot1.start">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.ot1.start = ''" class="text-[11px] w-14 px-1 rounded border border-green-300 bg-green-50 text-green-700 font-bold text-center print:hidden" x-model="quarterTimes.ot1.start" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
@@ -570,7 +570,7 @@
                                     <span class="font-bold">OT</span>
                                     <div class="flex items-center gap-1">
                                         <template x-if="!quarterTimes.ot1.end">
-                                            <button @click="recordQuarterTime('ot1', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">終了</button>
+                                            <button @click="recordQuarterTime('ot1', 'end')" class="text-[10px] w-14 px-1 rounded hover:bg-blue-200 print:hidden text-gray-500 text-center">End</button>
                                         </template>
                                         <template x-if="quarterTimes.ot1.end">
                                             <input type="text" @click.stop @blur="if(!$event.target.value) quarterTimes.ot1.end = ''" class="text-[11px] w-14 px-1 rounded border border-red-300 bg-red-50 text-red-700 font-bold text-center print:hidden" x-model="quarterTimes.ot1.end" pattern="[0-9]{2}:[0-9]{2}" placeholder="mm:ss">
@@ -580,7 +580,7 @@
                                 </div>
                             </th>
                             
-                            <th class="border border-gray-500 p-1 w-10" rowspan="2">得点</th>
+                            <th class="border border-gray-500 p-1 w-10" rowspan="2">Points</th>
                         </tr>
                         <tr class="bg-gray-200 print-bg-gray text-[9px] text-black font-semibold">
                             <th class="border border-gray-500 p-0.5 w-7">2P</th><th class="border border-gray-500 p-0.5 w-7">3P</th><th class="border border-gray-500 p-0.5 w-7">FT</th><th class="border border-gray-500 p-0.5 w-7">FTA</th>
@@ -681,7 +681,7 @@
                         
                         <!-- Total Row -->
                         <tr class="bg-gray-300 print-bg-gray font-bold border-t-2 border-gray-600">
-                            <td colspan="4" class="border border-gray-500 p-1 text-right pr-4">合計：</td>
+                            <td colspan="4" class="border border-gray-500 p-1 text-right pr-4">Total:</td>
                             <td colspan="20" class="border border-gray-500 bg-gray-200 print-bg-gray"></td>
                             <td class="border border-gray-500 text-center text-sm font-bold" x-text="getTotalPoints()"></td>
                         </tr>
@@ -698,7 +698,7 @@
                     <!-- Team Fouls -->
                     <div class="border border-gray-500 bg-white w-64 shrink-0">
                         <div class="flex border-b border-gray-500">
-                            <div class="w-24 p-1 text-xs font-bold border-r border-gray-500 bg-gray-300 print-bg-gray flex items-center justify-center">チームファウル</div>
+                            <div class="w-24 p-1 text-xs font-bold border-r border-gray-500 bg-gray-300 print-bg-gray flex items-center justify-center">Team Fouls</div>
                             <div class="flex-1 grid grid-cols-5 text-xs font-bold text-center bg-gray-200 print-bg-gray">
                                 <div class="border-r border-gray-500 p-1">1</div>
                                 <div class="border-r border-gray-500 p-1">2</div>
@@ -726,11 +726,11 @@
 
                     <!-- Timeouts -->
                     <div class="border border-gray-500 bg-white flex shrink-0 self-start">
-                        <div class="w-24 p-1 text-xs font-bold border-r border-gray-500 bg-gray-300 print-bg-gray flex items-center justify-center">タイムアウト</div>
+                        <div class="w-24 p-1 text-xs font-bold border-r border-gray-500 bg-gray-300 print-bg-gray flex items-center justify-center">Timeouts</div>
                         <div class="flex divide-x divide-gray-400">
                             <!-- First Half -->
                             <div class="flex flex-col items-center p-2 justify-center">
-                                <span class="text-[9px] text-gray-700 font-bold mb-1">前半</span>
+                                <span class="text-[9px] text-gray-700 font-bold mb-1">First Half</span>
                                 <div class="flex flex-col gap-0.5 items-center">
                                     <template x-for="(timeout, idx) in currentTeamState.timeouts.firstHalf" :key="idx">
                                         <div class="flex items-center gap-1">
@@ -745,7 +745,7 @@
                             </div>
                             <!-- Second Half -->
                             <div class="flex flex-col items-center p-2 justify-center">
-                                <span class="text-[9px] text-gray-700 font-bold mb-1">後半</span>
+                                <span class="text-[9px] text-gray-700 font-bold mb-1">Second Half</span>
                                 <div class="flex flex-col gap-0.5 items-center">
                                     <template x-for="(timeout, idx) in currentTeamState.timeouts.secondHalf" :key="idx">
                                         <div class="flex items-center gap-1">
@@ -787,11 +787,11 @@
 
                 <!-- Right: Memo Area -->
                 <div class="flex-1 border border-gray-500 bg-white p-1">
-                    <span class="text-[10px] text-gray-700 font-bold block mb-0.5">メモ (ベンチテクニカル、退場など)：</span>
+                    <span class="text-[10px] text-gray-700 font-bold block mb-0.5">Memo (Bench Technical, Ejections, etc.):</span>
                     <textarea 
                         class="w-full h-24 resize-none outline-none text-xs p-1 leading-tight"
                         x-model="currentTeamState.memo"
-                        aria-label="メモ欄"
+                        aria-label="Memo Field"
                     ></textarea>
                 </div>
             </div>
@@ -992,7 +992,7 @@
         <!-- 全画面モード切り替えボタン -->
         <button class="fullscreen-btn no-print" onclick="toggleFullscreenMode()">
             <span id="fullscreen-icon">⛶</span>
-            <span id="fullscreen-text">全画面表示</span>
+            <span id="fullscreen-text">Fullscreen</span>
         </button>
     </div>
 
@@ -1323,7 +1323,7 @@
                 },
             
                 clearData() {
-                    if(confirm('入力データを全て消去してリセットしますか？\nこの操作は取り消せません。')) {
+                    if(confirm('Are you sure you want to clear all data and reset?\nThis action cannot be undone.')) {
                         this.isResetting = true;
                         localStorage.removeItem('basketball-scoresheet-v1');
                         location.reload();
@@ -1443,10 +1443,10 @@
                             // ★追加：インポート直後の再描画を安定させるため
                             this.refreshKey++;
                             this.syncRunningScoreSelects(this.activeTeam);
-                            alert('JSONファイルからスコアシートを読み込みました。');
+                            alert('Scoresheet loaded from JSON file.');
                         } catch (err) {
                             console.error(err);
-                            alert('JSONファイルの読み込みに失敗しました。ファイル内容を確認してください。');
+                            alert('Failed to load JSON file. Please check the file contents.');
                         } finally {
                             // 同じファイルを再度選択できるようにリセット
                             event.target.value = '';
@@ -1467,7 +1467,7 @@
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().then(function () {
                     icon.textContent = '✕';
-                    text.textContent = '元に戻す';
+                    text.textContent = 'Exit Fullscreen';
                 }).catch(function (err) {
                     console.error('Fullscreen error:', err);
                 });
@@ -1475,7 +1475,7 @@
                 // 全画面中なら解除する
                 document.exitFullscreen().then(function () {
                     icon.textContent = '⛶';
-                    text.textContent = '全画面表示';
+                    text.textContent = 'Fullscreen';
                 }).catch(function (err) {
                     console.error('Exit fullscreen error:', err);
                 });

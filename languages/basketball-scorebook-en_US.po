@@ -1,0 +1,127 @@
+# English (US) translation for Basketball Scorebook
+# Copyright (C) 2025 ofbita / Basketball Manual
+# This file is distributed under the same license as the Basketball Scorebook package.
+# ofbita <https://doc778.com/>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Basketball Scorebook 1.0.2\n"
+"Report-Msgid-Bugs-To: https://doc778.com/scorebook/\n"
+"POT-Creation-Date: 2025-01-21 12:00+0000\n"
+"PO-Revision-Date: 2025-12-25 20:23+0900\n"
+"Last-Translator: ofbita <https://doc778.com/>\n"
+"Language-Team: English (US)\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+#: basketball-scorebook.php:81
+msgid "Basketball Scorebook"
+msgstr "Basketball Scorebook"
+
+#: basketball-scorebook.php:87
+msgid "📱 推奨環境:"
+msgstr "📱 Recommended Environment:"
+
+#: basketball-scorebook.php:88
+msgid "iPad または PC の横向き、Safari / Chrome でのご利用を推奨します(LINE 内ブラウザは非推奨)。"
+msgstr "We recommend using landscape mode on iPad or PC with Safari / Chrome (LINE in-app browser is not recommended)."
+
+#: basketball-scorebook.php:90
+msgid "💾 データ保存:"
+msgstr "💾 Data Storage:"
+
+#: basketball-scorebook.php:91
+msgid "入力内容はブラウザの LocalStorage に自動保存されます。同じ端末・ブラウザであれば再訪時に復元されます。"
+msgstr "Your input is automatically saved to browser LocalStorage. Data will be restored when you revisit using the same device and browser."
+
+#: basketball-scorebook.php:93
+msgid "🖨️ 印刷 / PDF:"
+msgstr "🖨️ Print / PDF:"
+
+#: basketball-scorebook.php:94
+msgid "アプリ内の「印刷 / PDF」ボタンから、スコアシートのみを A4 横で印刷 / PDF 保存できます。"
+msgstr "You can print or save as PDF in A4 landscape format from the \"Print / PDF\" button in the app."
+
+#: basketball-scorebook.php:138
+msgid "Basketball Scorebook 設定"
+msgstr "Basketball Scorebook Settings"
+
+#: basketball-scorebook.php:139
+msgid "Scorebook"
+msgstr "Scorebook"
+
+#: basketball-scorebook.php:154
+msgid "Basketball Scorebook - 設定と使い方"
+msgstr "Basketball Scorebook - Settings and Usage"
+
+#: basketball-scorebook.php:155
+msgid "以下のショートコードを投稿または固定ページに貼り付けてご利用ください。最も広いページテンプレート(全幅など)でご利用いただくことを推奨します。"
+msgstr "Please add the following shortcode to any post or page. We recommend using the widest page template (full-width, etc.) for the best experience."
+
+#: basketball-scorebook.php:160 basketball-scorebook.php:175
+msgid "コピー"
+msgstr "Copy"
+
+#: basketball-scorebook.php:164
+msgid "高さのカスタマイズ"
+msgstr "Height Customization"
+
+#: basketball-scorebook.php:166
+msgid "iframeの高さをカスタマイズしたい場合は、"
+msgstr "To customize the iframe height, specify the "
+
+#: basketball-scorebook.php:168
+msgid "属性を指定できます。デフォルトは"
+msgstr "attribute. The default is "
+
+#: basketball-scorebook.php:170
+msgid "(ビューポートの高さの85%)です。"
+msgstr "(85% of viewport height)."
+
+#: basketball-scorebook.php:179
+msgid "使用例:"
+msgstr "Usage Examples:"
+
+#: basketball-scorebook.php:180
+msgid "画面全体の高さ"
+msgstr "Full screen height"
+
+#: basketball-scorebook.php:181
+msgid "固定の600ピクセル"
+msgstr "Fixed 600 pixels"
+
+#: basketball-scorebook.php:182
+msgid "画面の90%の高さ"
+msgstr "90% of screen height"
+
+#: basketball-scorebook.php:185
+msgid "使い方・デモサイト"
+msgstr "Usage & Demo Site"
+
+#: basketball-scorebook.php:186
+msgid "具体的な利用方法、応用例、最新の情報は、開発元サイトでご確認いただけます。本プラグインの全機能のデモも兼ねています。"
+msgstr "For detailed usage instructions, examples, and the latest information, please visit the developer's website. It also serves as a full-featured demo of this plugin."
+
+#: basketball-scorebook.php:190
+msgid "【公式】Basketball Scorebook 利用ガイド・デモサイトはこちら"
+msgstr "【Official】Basketball Scorebook Usage Guide & Demo Site"
+
+#: basketball-scorebook.php:194
+msgid "サポートに関する注意点"
+msgstr "Support Notice"
+
+#: basketball-scorebook.php:196
+msgid "本プラグインはGPLライセンスで提供されますが、"
+msgstr "This plugin is provided under the GPL license, but "
+
+#: basketball-scorebook.php:197
+msgid "コード内の開発元へのリンクや著作権表示を削除・改変した場合、そのバージョンは非公式なものとみなし、サポートおよびバグ修正の対象外"
+msgstr "if you remove or modify the developer links or copyright notices in the code, that version will be considered unofficial and will not be eligible for support or bug fixes"
+
+#: basketball-scorebook.php:198
+msgid "とさせていただきます。ご理解をお願いいたします。"
+msgstr ". Thank you for your understanding."
