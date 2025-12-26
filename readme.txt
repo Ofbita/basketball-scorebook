@@ -60,7 +60,7 @@ Your data won't be lost during normal use. However, if you clear your browser's 
 
 = Can I save the scorebook as PDF? =
 
-Yes. Use your browser's Print function (Ctrl+P or Cmd+P) and select "Save as PDF". The layout is optimized for A4 landscape.
+Yes. select "Print/PDF". The layout is optimized for A4 landscape.
 
 = Is my data saved automatically? =
 
