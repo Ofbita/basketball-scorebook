@@ -1,129 +1,136 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Copyright (C) 2025 ofbita / Basketball Manual
+# This file is distributed under the same license as the Basketball Scorebook package.
 msgid ""
 msgstr ""
 "Project-Id-Version: Basketball Scorebook 1.0.2\n"
 "Report-Msgid-Bugs-To: https://doc778.com/scorebook/\n"
-"POT-Creation-Date: 2025-01-21 12:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2025-12-28 12:00+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: ofbita <https://doc778.com/>\n"
+"Language-Team: English <LL@li.org>\n"
+"X-Generator: Manual Edit\n"
 
-#: basketball-scorebook.php:81
+#: basketball-scorebook.php:71
 msgid "Basketball Scorebook"
 msgstr ""
 
-#: basketball-scorebook.php:87
-msgid "📱 推奨環境:"
+#: basketball-scorebook.php:77
+msgid "📱 Recommended Environment:"
 msgstr ""
 
-#: basketball-scorebook.php:88
-msgid "iPad または PC の横向き、Safari / Chrome でのご利用を推奨します(LINE 内ブラウザは非推奨)。"
+#: basketball-scorebook.php:78
+msgid ""
+"We recommend using landscape mode on iPad or PC with Safari / Chrome (LINE "
+"in-app browser is not recommended)."
 msgstr ""
 
-#: basketball-scorebook.php:90
-msgid "💾 データ保存:"
+#: basketball-scorebook.php:80
+msgid "💾 Data Storage:"
 msgstr ""
 
-#: basketball-scorebook.php:91
-msgid "入力内容はブラウザの LocalStorage に自動保存されます。同じ端末・ブラウザであれば再訪時に復元されます。"
+#: basketball-scorebook.php:81
+msgid ""
+"Your input is automatically saved to browser LocalStorage. Data will be "
+"restored when you revisit using the same device and browser."
 msgstr ""
 
-#: basketball-scorebook.php:93
-msgid "🖨️ 印刷 / PDF:"
+#: basketball-scorebook.php:83
+msgid "🖨️ Print / PDF:"
 msgstr ""
 
-#: basketball-scorebook.php:94
-msgid "アプリ内の「Print PDF」ボタンから、スコアシートのみを A4 横で印刷 / PDF 保存できます。"
+#: basketball-scorebook.php:84
+msgid ""
+"You can print or save as PDF in A4 landscape format from the \"Print / PDF\" "
+"button in the app."
 msgstr ""
 
-#: basketball-scorebook.php:138
-msgid "Basketball Scorebook 設定"
+#: basketball-scorebook.php:125
+msgid "Basketball Scorebook Settings"
 msgstr ""
 
-#: basketball-scorebook.php:139
+#: basketball-scorebook.php:126
 msgid "Scorebook"
 msgstr ""
 
-#: basketball-scorebook.php:154
-msgid "Basketball Scorebook - 設定と使い方"
+#: basketball-scorebook.php:141
+msgid "Basketball Scorebook - Settings and Usage"
+msgstr ""
+
+#: basketball-scorebook.php:142
+msgid ""
+"Please add the following shortcode to any post or page. We recommend using "
+"the widest page template (full-width, etc.) for the best experience."
+msgstr ""
+
+#: basketball-scorebook.php:147 basketball-scorebook.php:162
+msgid "Copy"
+msgstr ""
+
+#: basketball-scorebook.php:151
+msgid "Height Customization"
+msgstr ""
+
+#: basketball-scorebook.php:153
+msgid "To customize the iframe height, specify the "
 msgstr ""
 
 #: basketball-scorebook.php:155
-msgid "以下のショートコードを投稿または固定ページに貼り付けてご利用ください。最も広いページテンプレート(全幅など)でご利用いただくことを推奨します。"
+msgid "attribute. The default is "
 msgstr ""
 
-#: basketball-scorebook.php:160
-#: basketball-scorebook.php:175
-msgid "コピー"
-msgstr ""
-
-#: basketball-scorebook.php:164
-msgid "高さのカスタマイズ"
+#: basketball-scorebook.php:157
+msgid "(85% of viewport height)."
 msgstr ""
 
 #: basketball-scorebook.php:166
-msgid "iframeの高さをカスタマイズしたい場合は、"
+msgid "Usage Examples:"
+msgstr ""
+
+#: basketball-scorebook.php:167
+msgid "Full screen height"
 msgstr ""
 
 #: basketball-scorebook.php:168
-msgid "属性を指定できます。デフォルトは"
+msgid "Fixed 600 pixels"
 msgstr ""
 
-#: basketball-scorebook.php:170
-msgid "(ビューポートの高さの85%)です。"
+#: basketball-scorebook.php:169
+msgid "90% of screen height"
 msgstr ""
 
-#: basketball-scorebook.php:179
-msgid "使用例:"
+#: basketball-scorebook.php:172
+msgid "Usage & Demo Site"
 msgstr ""
 
-#: basketball-scorebook.php:180
-msgid "画面全体の高さ"
+#: basketball-scorebook.php:173
+msgid ""
+"For detailed usage instructions, examples, and the latest information, "
+"please visit the developer's website. It also serves as a full-featured demo "
+"of this plugin."
+msgstr ""
+
+#: basketball-scorebook.php:177
+msgid "【Official】Basketball Scorebook Usage Guide & Demo Site"
 msgstr ""
 
 #: basketball-scorebook.php:181
-msgid "固定の600ピクセル"
+msgid "Support Notice"
 msgstr ""
 
-#: basketball-scorebook.php:182
-msgid "画面の90%の高さ"
+#: basketball-scorebook.php:183
+msgid "This plugin is provided under the GPL license, but "
+msgstr ""
+
+#: basketball-scorebook.php:184
+msgid ""
+"if you remove or modify the developer links or copyright notices in the "
+"code, that version will be considered unofficial and will not be eligible "
+"for support or bug fixes"
 msgstr ""
 
 #: basketball-scorebook.php:185
-msgid "使い方・デモサイト"
+msgid ". Thank you for your understanding."
 msgstr ""
-
-#: basketball-scorebook.php:186
-msgid "具体的な利用方法、応用例、最新の情報は、開発元サイトでご確認いただけます。本プラグインの全機能のデモも兼ねています。"
-msgstr ""
-
-#: basketball-scorebook.php:190
-msgid "【公式】Basketball Scorebook 利用ガイド・デモサイトはこちら"
-msgstr ""
-
-#: basketball-scorebook.php:194
-msgid "サポートに関する注意点"
-msgstr ""
-
-#: basketball-scorebook.php:196
-msgid "本プラグインはGPLライセンスで提供されますが、"
-msgstr ""
-
-#: basketball-scorebook.php:197
-msgid "コード内の開発元へのリンクや著作権表示を削除・改変した場合、そのバージョンは非公式なものとみなし、サポートおよびバグ修正の対象外"
-msgstr ""
-
-#: basketball-scorebook.php:198
-msgid "とさせていただきます。ご理解をお願いいたします。"
-msgstr ""
-

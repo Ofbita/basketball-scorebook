@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Basketball Scorebook
  * Plugin URI: https://doc778.com/scorebook/
- * Description: 試合で使える無料のバスケットボールデジタルスコアシート。タイムスタンプ付き、LocalStorage保存、PDF印刷対応。
+ * Description: Free digital basketball scorebook for games. Features timestamps, LocalStorage saving, and PDF printing support.
  * Version: 1.0.2
  * Author: ofbita
  * Author URI: https://doc778.com/
@@ -23,13 +23,11 @@ define('BASKSC_VERSION', '1.0.2');
 define('BASKSC_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BASKSC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-
 /**
  * フロントエンド用アセットを登録
  */
 function basketball_scorebook_register_assets()
 {
-    // フロントエンド用CSSを登録（まだ読み込まない）
     wp_register_style(
         'basketball-scorebook-frontend',
         BASKSC_PLUGIN_URL . 'assets/css/frontend.css',
@@ -41,11 +39,9 @@ add_action('wp_enqueue_scripts', 'basketball_scorebook_register_assets');
 
 /**
  * ショートコード [basketball_scorebook]
- * ほぼ全画面に近い iframe と、簡単なガイドテキストを出力します。
  */
 function basketball_scorebook_shortcode($atts)
 {
-    // 登録済みCSSをエンキュー（ショートコードが使われたページでのみ読み込まれる）
     wp_enqueue_style('basketball-scorebook-frontend');
 
     $atts = shortcode_atts(
@@ -56,11 +52,10 @@ function basketball_scorebook_shortcode($atts)
         'basketball_scorebook'
     );
 
-    // 言語判定: 英語環境では index-en.html を使用
     $locale = get_locale();
-    $html_file = 'index.html'; // デフォルト（日本語）
-    if (strpos($locale, 'en') === 0) {
-        $html_file = 'index-en.html';
+    $html_file = 'index-en.html';
+    if ($locale === 'ja') {
+        $html_file = 'index.html';
     }
     
     $iframe_url = BASKSC_PLUGIN_URL . 'assets/app/' . $html_file . '?v=' . BASKSC_VERSION;
@@ -79,14 +74,14 @@ function basketball_scorebook_shortcode($atts)
         ></iframe>
 
         <div class="basksc-guide">
-            <strong><?php echo esc_html__('📱 推奨環境:', 'basketball-scorebook'); ?></strong>
-            <?php echo esc_html__('iPad または PC の横向き、Safari / Chrome でのご利用を推奨します(LINE 内ブラウザは非推奨)。', 'basketball-scorebook'); ?><br>
+            <strong><?php echo esc_html__('📱 Recommended Environment:', 'basketball-scorebook'); ?></strong>
+            <?php echo esc_html__('We recommend using landscape mode on iPad or PC with Safari / Chrome (LINE in-app browser is not recommended).', 'basketball-scorebook'); ?><br>
 
-            <strong><?php echo esc_html__('💾 データ保存:', 'basketball-scorebook'); ?></strong>
-            <?php echo esc_html__('入力内容はブラウザの LocalStorage に自動保存されます。同じ端末・ブラウザであれば再訪時に復元されます。', 'basketball-scorebook'); ?><br>
+            <strong><?php echo esc_html__('💾 Data Storage:', 'basketball-scorebook'); ?></strong>
+            <?php echo esc_html__('Your input is automatically saved to browser LocalStorage. Data will be restored when you revisit using the same device and browser.', 'basketball-scorebook'); ?><br>
 
-            <strong><?php echo esc_html__('🖨️ 印刷 / PDF:', 'basketball-scorebook'); ?></strong>
-            <?php echo esc_html__('アプリ内の「印刷 / PDF」ボタンから、スコアシートのみを A4 横で印刷 / PDF 保存できます。', 'basketball-scorebook'); ?>
+            <strong><?php echo esc_html__('🖨️ Print / PDF:', 'basketball-scorebook'); ?></strong>
+            <?php echo esc_html__('You can print or save as PDF in A4 landscape format from the "Print / PDF" button in the app.', 'basketball-scorebook'); ?>
         </div>
     </div>
     <?php
@@ -100,12 +95,10 @@ add_shortcode('basketball_scorebook', 'basketball_scorebook_shortcode');
  */
 function basketball_scorebook_enqueue_admin_assets($hook)
 {
-    // このプラグインの設定ページのみで読み込む
     if ('settings_page_basketball-scorebook' !== $hook) {
         return;
     }
 
-    // 管理画面用CSS
     wp_enqueue_style(
         'basketball-scorebook-admin',
         BASKSC_PLUGIN_URL . 'assets/css/admin.css',
@@ -113,7 +106,6 @@ function basketball_scorebook_enqueue_admin_assets($hook)
         BASKSC_VERSION
     );
 
-    // 管理画面用JavaScript
     wp_enqueue_script(
         'basketball-scorebook-admin',
         BASKSC_PLUGIN_URL . 'assets/js/admin.js',
@@ -125,12 +117,12 @@ function basketball_scorebook_enqueue_admin_assets($hook)
 add_action('admin_enqueue_scripts', 'basketball_scorebook_enqueue_admin_assets');
 
 /**
- * 管理画面に簡単な説明ページを追加
+ * Adding a menu to the administration screen
  */
 function basketball_scorebook_add_admin_menu()
 {
     add_options_page(
-        __('Basketball Scorebook 設定', 'basketball-scorebook'),
+        __('Basketball Scorebook Settings', 'basketball-scorebook'),
         __('Scorebook', 'basketball-scorebook'),
         'manage_options',
         'basketball-scorebook',
@@ -140,78 +132,65 @@ function basketball_scorebook_add_admin_menu()
 add_action('admin_menu', 'basketball_scorebook_add_admin_menu');
 
 /**
- * 設定ページの出力
+ * Output setting page
  */
 function basketball_scorebook_settings_page()
 {
     ?>
     <div class="wrap">
-        <h2><?php echo esc_html__('Basketball Scorebook - 設定と使い方', 'basketball-scorebook'); ?></h2>
-        <p><?php echo esc_html__('以下のショートコードを投稿または固定ページに貼り付けてご利用ください。最も広いページテンプレート(全幅など)でご利用いただくことを推奨します。', 'basketball-scorebook'); ?></p>
+        <h2><?php echo esc_html__('Basketball Scorebook - Settings and Usage', 'basketball-scorebook'); ?></h2>
+        <p><?php echo esc_html__('Please add the following shortcode to any post or page. We recommend using the widest page template (full-width, etc.) for the best experience.', 'basketball-scorebook'); ?></p>
 
         <div class="basksc-code-box">
             <code id="basksc-shortcode">[basketball_scorebook]</code>
             <button type="button" class="button button-secondary" data-clipboard-target="basksc-shortcode">
-                <?php echo esc_html__('コピー', 'basketball-scorebook'); ?>
+                <?php echo esc_html__('Copy', 'basketball-scorebook'); ?>
             </button>
         </div>
 
-        <h3><?php echo esc_html__('高さのカスタマイズ', 'basketball-scorebook'); ?></h3>
+        <h3><?php echo esc_html__('Height Customization', 'basketball-scorebook'); ?></h3>
         <p>
-            <?php echo esc_html__('iframeの高さをカスタマイズしたい場合は、', 'basketball-scorebook'); ?>
+            <?php echo esc_html__('To customize the iframe height, specify the ', 'basketball-scorebook'); ?>
             <code>height</code>
-            <?php echo esc_html__('属性を指定できます。デフォルトは', 'basketball-scorebook'); ?>
+            <?php echo esc_html__('attribute. The default is ', 'basketball-scorebook'); ?>
             <code>85vh</code>
-            <?php echo esc_html__('(ビューポートの高さの85%)です。', 'basketball-scorebook'); ?>
+            <?php echo esc_html__('(85% of viewport height).', 'basketball-scorebook'); ?>
         </p>
         <div class="basksc-code-box">
             <code id="basksc-shortcode-height">[basketball_scorebook height="100vh"]</code>
             <button type="button" class="button button-secondary" data-clipboard-target="basksc-shortcode-height">
-                <?php echo esc_html__('コピー', 'basketball-scorebook'); ?>
+                <?php echo esc_html__('Copy', 'basketball-scorebook'); ?>
             </button>
         </div>
         <p class="basksc-usage-note">
-            <strong><?php echo esc_html__('使用例:', 'basketball-scorebook'); ?></strong><br>
-            • <code>[basketball_scorebook height="100vh"]</code> - <?php echo esc_html__('画面全体の高さ', 'basketball-scorebook'); ?><br>
-            • <code>[basketball_scorebook height="600px"]</code> - <?php echo esc_html__('固定の600ピクセル', 'basketball-scorebook'); ?><br>
-            • <code>[basketball_scorebook height="90vh"]</code> - <?php echo esc_html__('画面の90%の高さ', 'basketball-scorebook'); ?>
+            <strong><?php echo esc_html__('Usage Examples:', 'basketball-scorebook'); ?></strong><br>
+            • <code>[basketball_scorebook height="100vh"]</code> - <?php echo esc_html__('Full screen height', 'basketball-scorebook'); ?><br>
+            • <code>[basketball_scorebook height="600px"]</code> - <?php echo esc_html__('Fixed 600 pixels', 'basketball-scorebook'); ?><br>
+            • <code>[basketball_scorebook height="90vh"]</code> - <?php echo esc_html__('90% of screen height', 'basketball-scorebook'); ?>
         </p>
 
-        <h3><?php echo esc_html__('使い方・デモサイト', 'basketball-scorebook'); ?></h3>
-        <p><?php echo esc_html__('具体的な利用方法、応用例、最新の情報は、開発元サイトでご確認いただけます。本プラグインの全機能のデモも兼ねています。', 'basketball-scorebook'); ?></p>
+        <h3><?php echo esc_html__('Usage & Demo Site', 'basketball-scorebook'); ?></h3>
+        <p><?php echo esc_html__('For detailed usage instructions, examples, and the latest information, please visit the developer\'s website. It also serves as a full-featured demo of this plugin.', 'basketball-scorebook'); ?></p>
         <p>
             👉
             <a href="https://doc778.com/scorebook/" target="_blank" class="basksc-demo-link">
-                <?php echo esc_html__('【公式】Basketball Scorebook 利用ガイド・デモサイトはこちら', 'basketball-scorebook'); ?>
+                <?php echo esc_html__('【Official】Basketball Scorebook Usage Guide & Demo Site', 'basketball-scorebook'); ?>
             </a>
         </p>
 
-        <h3><?php echo esc_html__('サポートに関する注意点', 'basketball-scorebook'); ?></h3>
+        <h3><?php echo esc_html__('Support Notice', 'basketball-scorebook'); ?></h3>
         <p class="basksc-support-notice">
-            <?php echo esc_html__('本プラグインはGPLライセンスで提供されますが、', 'basketball-scorebook'); ?>
-            <strong><?php echo esc_html__('コード内の開発元へのリンクや著作権表示を削除・改変した場合、そのバージョンは非公式なものとみなし、サポートおよびバグ修正の対象外', 'basketball-scorebook'); ?></strong>
-            <?php echo esc_html__('とさせていただきます。ご理解をお願いいたします。', 'basketball-scorebook'); ?>
+            <?php echo esc_html__('This plugin is provided under the GPL license, but ', 'basketball-scorebook'); ?>
+            <strong><?php echo esc_html__('if you remove or modify the developer links or copyright notices in the code, that version will be considered unofficial and will not be eligible for support or bug fixes', 'basketball-scorebook'); ?></strong>
+            <?php echo esc_html__('. Thank you for your understanding.', 'basketball-scorebook'); ?>
         </p>
 
     </div>
     <?php
 }
 
-/**
- * 有効化フック
- */
-function basketball_scorebook_activate()
-{
-    // 必要ならここでオプション初期化などを行う
-}
+function basketball_scorebook_activate() {}
 register_activation_hook(__FILE__, 'basketball_scorebook_activate');
 
-/**
- * 無効化フック
- */
-function basketball_scorebook_deactivate()
-{
-    // LocalStorage はクライアント側なので特に削除処理なし
-}
+function basketball_scorebook_deactivate() {}
 register_deactivation_hook(__FILE__, 'basketball_scorebook_deactivate');
-
