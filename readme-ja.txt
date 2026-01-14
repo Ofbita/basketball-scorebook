@@ -4,7 +4,7 @@ Tags: basketball, scorebook, sports, timer, pdf
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.2
+Stable Tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == 変更履歴 ==
 
+= 1.0.3 =
+
+* 更新: v1.1.0移行準備として保存データスキーマを拡張（`meta` と `foulEvents` を保存/書出/読込に追加。LocalStorageキーは維持）
+* 更新: スキーマバージョン管理を追加（`meta.schemaVersion = 103`）し、後方互換のためのデフォルト補完を実装
+
 = 1.0.2 =
 
 * 追加: 完全な国際化（i18n）対応
@@ -95,6 +100,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 * 初回リリース
 
 == アップグレード通知 ==
+
+= 1.0.3 =
+
+将来互換のためのデータ構造更新です。既存データは互換性があり、LocalStorageキーも変更しません。
 
 = 1.0.2 =
 

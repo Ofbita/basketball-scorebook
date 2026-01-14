@@ -3,7 +3,7 @@
  * Plugin Name: Basketball Scorebook
  * Plugin URI: https://doc778.com/scorebook/
  * Description: Free digital basketball scorebook for games. Features timestamps, LocalStorage saving, and PDF printing support.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: ofbita
  * Author URI: https://doc778.com/
  * Copyright: 2025 ofbita / Basketball Manual
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // 4文字以上のプレフィックスを使用
-define('BASKSC_VERSION', '1.0.2');
+define('BASKSC_VERSION', '1.0.3');
 define('BASKSC_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BASKSC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 

@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.2
+Stable Tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ Yes. The scorebook auto-saves to your browser's LocalStorage every time you make
 
 == Changelog ==
 
+= 1.0.3 =
+
+* Updated: Prepare v1.1.0 migration by extending saved data schema (adds `meta` and `foulEvents` to save/export/import while keeping LocalStorage key)
+* Updated: Add schema versioning (`meta.schemaVersion = 103`) and default-fill logic for backward compatibility
+
 = 1.0.2 =
 
 * Added: Full internationalization (i18n) support
@@ -95,6 +100,10 @@ Yes. The scorebook auto-saves to your browser's LocalStorage every time you make
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+
+Data schema update for future compatibility. Existing data remains compatible, and the LocalStorage key is unchanged.
 
 = 1.0.2 =
 
