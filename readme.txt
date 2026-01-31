@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.3
+Stable Tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,9 +35,9 @@ For the best experience, we recommend using a "Full-Width" page template to maxi
 
 You can try the full functionality of the Scorebook without installing the plugin at the official demo site:
 
-**Demo URL:** [https://doc778.com/scorebook/](https://doc778.com/scorebook/)
+**Demo URL:** [https://doc778.com/scorebook?lang=en](https://doc778.com/scorebook?lang=en)
 
-**Usage Guide:** [https://doc778.com/help-scorebook](https://doc778.com/help-scorebook)
+**Usage Guide:** [https://doc778.com/help-scorebook?lang=en](https://doc778.com/help-scorebook?lang=en)
 
 Simply add the shortcode `[basketball_scorebook]` to any page or post.
 For the best experience, we recommend using a "Full-Width" page template to maximize the workspace.
@@ -75,6 +75,11 @@ Yes. The scorebook auto-saves to your browser's LocalStorage every time you make
 
 == Changelog ==
 
+= 1.0.4 =
+
+* Fixed: English app Help button now opens the English usage guide URL (`?lang=en`)
+* Improved: Disabled browser auto-translation inside the scorebook iframe to prevent UI breakage (DOM rewrites)
+
 = 1.0.3 =
 
 * Updated: Prepare v1.1.0 migration by extending saved data schema (adds `meta` and `foulEvents` to save/export/import while keeping LocalStorage key)
@@ -100,6 +105,10 @@ Yes. The scorebook auto-saves to your browser's LocalStorage every time you make
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.4 =
+
+English Help link improvement (opens the English guide page).
 
 = 1.0.3 =
 

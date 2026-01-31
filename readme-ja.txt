@@ -4,7 +4,7 @@ Tags: basketball, scorebook, sports, timer, pdf
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.3
+Stable Tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == 変更履歴 ==
 
+= 1.0.4 =
+
+* 修正: 英語版の「Help」ボタンが英語の使い方ページ（`?lang=en`）を開くように修正
+* 改善: ブラウザの自動翻訳による画面崩れを防ぐため、スコアブックUI（iframe内）で自動翻訳を無効化
+
 = 1.0.3 =
 
 * 更新: v1.1.0移行準備として保存データスキーマを拡張（`meta` と `foulEvents` を保存/書出/読込に追加。LocalStorageキーは維持）
@@ -100,6 +105,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 * 初回リリース
 
 == アップグレード通知 ==
+
+= 1.0.4 =
+
+英語版の使い方リンク改善（英語ガイドを開きます）。
 
 = 1.0.3 =
 
