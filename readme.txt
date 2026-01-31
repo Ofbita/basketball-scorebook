@@ -132,12 +132,12 @@ This plugin includes the following third-party libraries:
 
 = Alpine.js =
 
-* Version: 3.x (minified)
+* Version: 3.13.3 (minified)
 * Source Code: https://github.com/alpinejs/alpine
 * License: MIT License
 * License URL: https://github.com/alpinejs/alpine/blob/main/LICENSE.md
 * Used in: assets/app/cdn.min.js
-* Official CDN: https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js
+* Official CDN: https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js
 
 The minified version (cdn.min.js) is distributed by the Alpine.js project.
 The non-minified source code is available at the GitHub repository linked above.

@@ -132,12 +132,12 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 = Alpine.js =
 
-* バージョン: 3.x（minified）
+* バージョン: 3.13.3（minified）
 * ソースコード: https://github.com/alpinejs/alpine
 * ライセンス: MIT License
 * ライセンスURL: https://github.com/alpinejs/alpine/blob/main/LICENSE.md
 * 使用場所: assets/app/cdn.min.js
-* 公式CDN: https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js
+* 公式CDN: https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js
 
 配布されているminified版（cdn.min.js）はAlpine.jsプロジェクトにより提供されています。
 非minified版のソースコードは上記GitHubリポジトリから取得できます。
