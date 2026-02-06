@@ -1,5 +1,7 @@
 # Basketball Scorebook for WordPress
 
+[🇯🇵 日本語のドキュメント (Japanese Docs)](./README.ja.md)
+
 [![WordPress Plugin](https://img.shields.io/wordpress/v/basketball-scorebook.svg)](https://wordpress.org/plugins/basketball-scorebook/)
 [![GPLv2 License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
