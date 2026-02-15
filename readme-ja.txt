@@ -4,7 +4,7 @@ Tags: basketball, scorebook, sports, timer, pdf
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.5
+Stable Tag: 1.0.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == 変更履歴 ==
 
+= 1.0.5.1 =
+
+* 修正: 設定画面（プライバシー/データ保存、匿名利用統計、変更を保存）およびレビュー依頼文言（Basketball Scorebook をご利用いただき…、レビューを書く、ヘルプを見る、後で）の日本語・en_US 翻訳を追加
+
 = 1.0.5 =
 
 * 追加: 匿名利用統計（オプトイン、イベントのみ、デフォルトOFF）
@@ -116,6 +120,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 * 初回リリース
 
 == アップグレード通知 ==
+
+= 1.0.5.1 =
+
+翻訳の更新: 設定画面とレビュー依頼が日本語で完全に表示されます。日本語でご利用の場合はアップデートを推奨します。
 
 = 1.0.5 =
 

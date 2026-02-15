@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Basketball Scorebook package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Basketball Scorebook 1.0.3\n"
+"Project-Id-Version: Basketball Scorebook 1.0.5.1\n"
 "Report-Msgid-Bugs-To: https://doc778.com/scorebook/\n"
-"POT-Creation-Date: 2025-12-28 12:00+0000\n"
+"POT-Creation-Date: 2026-02-15 12:00+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: English <LL@li.org>\n"
 "X-Generator: Manual Edit\n"
 
-#: basketball-scorebook.php:71
+#: basketball-scorebook.php:71 basketball-scorebook.php:126
 msgid "Basketball Scorebook"
 msgstr ""
 
@@ -51,10 +51,6 @@ msgstr ""
 msgid "Basketball Scorebook Settings"
 msgstr ""
 
-#: basketball-scorebook.php:126
-msgid "Basketball Scorebook"
-msgstr ""
-
 #: basketball-scorebook.php:141
 msgid "Basketball Scorebook - Settings and Usage"
 msgstr ""
@@ -63,6 +59,54 @@ msgstr ""
 msgid ""
 "Please add the following shortcode to any post or page. We recommend using "
 "the widest page template (full-width, etc.) for the best experience."
+msgstr ""
+
+#: basketball-scorebook.php:296
+msgid "Thanks for using Basketball Scorebook!"
+msgstr ""
+
+#: basketball-scorebook.php:297
+msgid "If you find it helpful, a review would really support ongoing development."
+msgstr ""
+
+#: basketball-scorebook.php:329
+msgid "Leave a Review"
+msgstr ""
+
+#: basketball-scorebook.php:332
+msgid "View Help"
+msgstr ""
+
+#: basketball-scorebook.php:335
+msgid "Not Now"
+msgstr ""
+
+#: basketball-scorebook.php:341
+msgid "Privacy / Data Storage"
+msgstr ""
+
+#: basketball-scorebook.php:343
+msgid "Your scorebook data is saved in your browser (LocalStorage). It is not saved to the WordPress database."
+msgstr ""
+
+#: basketball-scorebook.php:344
+msgid "For important games, we recommend exporting JSON as a backup."
+msgstr ""
+
+#: basketball-scorebook.php:347
+msgid "Anonymous Usage Statistics (Opt-in)"
+msgstr ""
+
+#: basketball-scorebook.php:354
+msgid "Send anonymous usage events to help improve this plugin (default: OFF)."
+msgstr ""
+
+#: basketball-scorebook.php:357
+msgid "We only send minimal event data (plugin version, WP/PHP version, locale, and event name). We do not send your site URL, email address, or any scorebook contents."
+msgstr ""
+
+#: basketball-scorebook.php:359
+msgid "Save Changes"
 msgstr ""
 
 #: basketball-scorebook.php:147 basketball-scorebook.php:162

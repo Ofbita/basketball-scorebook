@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Basketball Scorebook 1.0.3\n"
+"Project-Id-Version: Basketball Scorebook 1.0.5.1\n"
 "Report-Msgid-Bugs-To: https://doc778.com/scorebook/\n"
 "POT-Creation-Date: 2025-12-28 12:00+0000\n"
-"PO-Revision-Date: 2026-01-11 23:36+0900\n"
+"PO-Revision-Date: 2026-02-15 12:00+0900\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ja\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
 
-#: basketball-scorebook.php:71
+#: basketball-scorebook.php:71 basketball-scorebook.php:126
 msgid "Basketball Scorebook"
 msgstr "Basketball Scorebook"
 
@@ -61,10 +61,6 @@ msgstr ""
 msgid "Basketball Scorebook Settings"
 msgstr "Basketball Scorebook 設定"
 
-#: basketball-scorebook.php:126
-msgid "Basketball Scorebook"
-msgstr "Basketball Scorebook"
-
 #: basketball-scorebook.php:141
 msgid "Basketball Scorebook - Settings and Usage"
 msgstr "Basketball Scorebook - 設定と使い方"
@@ -76,6 +72,54 @@ msgid ""
 msgstr ""
 "以下のショートコードを投稿または固定ページに貼り付けてご利用ください。最も広"
 "いページテンプレート(全幅など)でご利用いただくことを推奨します。"
+
+#: basketball-scorebook.php:296
+msgid "Thanks for using Basketball Scorebook!"
+msgstr "Basketball Scorebook をご利用いただきありがとうございます！"
+
+#: basketball-scorebook.php:297
+msgid "If you find it helpful, a review would really support ongoing development."
+msgstr "お役に立てていれば、レビューをいただけると今後の開発の励みになります。"
+
+#: basketball-scorebook.php:329
+msgid "Leave a Review"
+msgstr "レビューを書く"
+
+#: basketball-scorebook.php:332
+msgid "View Help"
+msgstr "ヘルプを見る"
+
+#: basketball-scorebook.php:335
+msgid "Not Now"
+msgstr "後で"
+
+#: basketball-scorebook.php:341
+msgid "Privacy / Data Storage"
+msgstr "プライバシー / データ保存"
+
+#: basketball-scorebook.php:343
+msgid "Your scorebook data is saved in your browser (LocalStorage). It is not saved to the WordPress database."
+msgstr "スコアブックのデータはブラウザ（LocalStorage）に保存されます。WordPress のデータベースには保存されません。"
+
+#: basketball-scorebook.php:344
+msgid "For important games, we recommend exporting JSON as a backup."
+msgstr "重要な試合では、バックアップとして JSON のエクスポートをおすすめします。"
+
+#: basketball-scorebook.php:347
+msgid "Anonymous Usage Statistics (Opt-in)"
+msgstr "匿名利用統計（任意）"
+
+#: basketball-scorebook.php:354
+msgid "Send anonymous usage events to help improve this plugin (default: OFF)."
+msgstr "このプラグインの改善のため、匿名の利用イベントを送信する（デフォルト: OFF）。"
+
+#: basketball-scorebook.php:357
+msgid "We only send minimal event data (plugin version, WP/PHP version, locale, and event name). We do not send your site URL, email address, or any scorebook contents."
+msgstr "送信するのは最小限のイベントデータ（プラグインのバージョン、WP/PHP のバージョン、ロケール、イベント名）のみです。サイトの URL、メールアドレス、スコアブックの内容は送信しません。"
+
+#: basketball-scorebook.php:359
+msgid "Save Changes"
+msgstr "変更を保存"
 
 #: basketball-scorebook.php:147 basketball-scorebook.php:162
 msgid "Copy"

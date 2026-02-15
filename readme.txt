@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.5
+Stable Tag: 1.0.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,10 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 
 == Changelog ==
 
+= 1.0.5.1 =
+
+* Fixed: Added missing Japanese (and en_US) translations for the settings page (Privacy / Data Storage, Anonymous Usage Statistics, Save Changes, and review prompt strings: Thanks for using…, Leave a Review, View Help, Not Now)
+
 = 1.0.5 =
 
 * Added: Opt-in anonymous usage statistics (events only, default OFF)
@@ -116,6 +120,10 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.5.1 =
+
+Translation update: settings page and review prompt are now fully translated in Japanese (and en_US). Recommended if you use the plugin in Japanese.
 
 = 1.0.5 =
 
