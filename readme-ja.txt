@@ -4,7 +4,7 @@ Tags: basketball, scorebook, sports, timer, pdf
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.4
+Stable Tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 はい。スコアブックは変更のたびにブラウザのLocalStorageに自動保存されます。
 
+= 外部へデータ送信されますか？ =
+
+デフォルトでは **送信しません**。設定画面でユーザーが明示的に同意（オプトイン）した場合のみ、匿名の利用イベント（回数）を送信します。
+送信するのは最小限の情報（プラグイン/WordPress/PHPバージョン、ロケール、イベント名）のみで、サイトURL、メールアドレス、スコアブックの内容などは送信しません。
+
 == スクリーンショット ==
 
 1. リアルタイム得点記録機能付きメインスコアボード画面
@@ -74,6 +79,12 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 4. A4横向き印刷プレビュー
 
 == 変更履歴 ==
+
+= 1.0.5 =
+
+* 追加: 匿名利用統計（オプトイン、イベントのみ、デフォルトOFF）
+* 追加: 有効化から7日後に設定画面でレビュー依頼を表示（ユーザー単位で1回）
+* 更新: 設定画面とドキュメントにプライバシー注記（データはブラウザに保存）を追加
 
 = 1.0.4 =
 
@@ -105,6 +116,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 * 初回リリース
 
 == アップグレード通知 ==
+
+= 1.0.5 =
+
+オプトイン式の匿名利用統計と、設定画面でのレビュー導線を追加しました。
 
 = 1.0.4 =
 

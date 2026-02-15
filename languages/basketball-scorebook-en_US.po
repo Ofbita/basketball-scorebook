@@ -62,8 +62,8 @@ msgid "Basketball Scorebook Settings"
 msgstr "Basketball Scorebook Settings"
 
 #: basketball-scorebook.php:126
-msgid "Scorebook"
-msgstr "Scorebook"
+msgid "Basketball Scorebook"
+msgstr "Basketball Scorebook"
 
 #: basketball-scorebook.php:141
 msgid "Basketball Scorebook - Settings and Usage"

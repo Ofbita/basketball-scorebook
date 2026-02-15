@@ -52,7 +52,7 @@ msgid "Basketball Scorebook Settings"
 msgstr ""
 
 #: basketball-scorebook.php:126
-msgid "Scorebook"
+msgid "Basketball Scorebook"
 msgstr ""
 
 #: basketball-scorebook.php:141

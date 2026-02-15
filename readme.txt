@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.4
+Stable Tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,11 @@ Yes. Select "Print/PDF". The layout is optimized for A4 landscape.
 
 Yes. The scorebook auto-saves to your browser's LocalStorage every time you make a change.
 
+= Does this plugin send any data outside my site? =
+
+By default, **No**. The plugin does not send any analytics/telemetry unless you explicitly opt in from the settings page.
+If you opt in, the plugin sends **anonymous event counts only** (plugin version, WordPress/PHP version, locale, and event name). It does not send your site URL, email address, or any scorebook contents.
+
 == Screenshots ==
 
 1. Main scoreboard interface with real-time scoring
@@ -74,6 +79,12 @@ Yes. The scorebook auto-saves to your browser's LocalStorage every time you make
 4. Print preview optimized for A4 landscape
 
 == Changelog ==
+
+= 1.0.5 =
+
+* Added: Opt-in anonymous usage statistics (events only, default OFF)
+* Added: Review prompt shown on the settings page after 7 days (one-time per user)
+* Updated: Documentation and settings page privacy notes (data is stored in the browser)
 
 = 1.0.4 =
 
@@ -105,6 +116,10 @@ Yes. The scorebook auto-saves to your browser's LocalStorage every time you make
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+
+Adds optional (opt-in) anonymous usage statistics and a gentle review prompt in the settings page.
 
 = 1.0.4 =
 

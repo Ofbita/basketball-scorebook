@@ -24,12 +24,12 @@
 .basksc-demo-link {
     font-weight: bold;
     font-size: 1.1em;
-    color: #d63638;
+    color: #2271b1;
 }
 
 .basksc-support-notice {
-    color: #a00;
-    border: 1px solid #fcc;
+    color: #1d2327;
+    border: 1px solid #c3c4c7;
     padding: 10px;
-    background: #fff8f8;
+    background: #fff;
 }

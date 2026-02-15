@@ -323,7 +323,7 @@
                         </button>
 
                         <button 
-                            @click="window.print()"
+                            @click="onPrint()"
                             class="bsb-btn bsb-btn--print"
                             title="Print scoresheet only in A4 landscape / Save as PDF"
                         >
@@ -331,7 +331,7 @@
                             <span class="bsb-btn-label">Print / PDF</span>
                         </button>
                         <button 
-                            @click="window.open('https://doc778.com/help-scorebook?lang=en', '_blank')"
+                            @click="onHelp()"
                             class="bsb-btn bsb-btn--help"
                             title="View instructions"
                         >
@@ -997,6 +997,7 @@
         </button>
     </div>
 
+    <script src="./telemetry.js"></script>
     <script>
         // 元の scoresheet() ロジックをベースに、スクショ用メソッドを追加
         function scoresheet() {
@@ -1414,6 +1415,12 @@
                     // ★追加：復元が終わったあとに refreshKey をインクリメント
                     this.refreshKey++;
                     this.syncRunningScoreSelects(this.activeTeam);
+
+                    try {
+                        if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                            window.BASKSC_TELEMETRY.track('app_loaded');
+                        }
+                    } catch (e) {}
                 },
             
                 saveData() {
@@ -1476,6 +1483,12 @@
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
+
+                    try {
+                        if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                            window.BASKSC_TELEMETRY.track('export_json');
+                        }
+                    } catch (e) {}
                 },
 
                 // Import ボタンから隠し input[type=file] を開く
@@ -1595,9 +1608,19 @@
                             // ★追加：インポート直後の再描画を安定させるため
                             this.refreshKey++;
                             this.syncRunningScoreSelects(this.activeTeam);
+                            try {
+                                if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                                    window.BASKSC_TELEMETRY.track('import_json_success');
+                                }
+                            } catch (e) {}
                             alert('Scoresheet loaded from JSON file.');
                         } catch (err) {
                             console.error(err);
+                            try {
+                                if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                                    window.BASKSC_TELEMETRY.track('import_json_fail');
+                                }
+                            } catch (e) {}
                             alert('Failed to load JSON file. Please check the file contents.');
                         } finally {
                             // 同じファイルを再度選択できるようにリセット
@@ -1606,6 +1629,24 @@
                     };
 
                     reader.readAsText(file, 'utf-8');
+                },
+
+                onPrint() {
+                    try {
+                        if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                            window.BASKSC_TELEMETRY.track('print_pdf');
+                        }
+                    } catch (e) {}
+                    window.print();
+                },
+
+                onHelp() {
+                    try {
+                        if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                            window.BASKSC_TELEMETRY.track('help_opened');
+                        }
+                    } catch (e) {}
+                    window.open('https://doc778.com/help-scorebook?lang=en', '_blank');
                 }
             }
         }
