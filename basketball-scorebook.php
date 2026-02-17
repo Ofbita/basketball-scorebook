@@ -3,7 +3,7 @@
  * Plugin Name: Basketball Scorebook
  * Plugin URI: https://doc778.com/scorebook/
  * Description: Free digital basketball scorebook for games. Features timestamps, LocalStorage saving, and PDF printing support.
- * Version: 1.0.5.1
+ * Version: 1.0.5.2
  * Author: ofbita
  * Author URI: https://doc778.com/
  * Copyright: 2025 ofbita / Basketball Manual
@@ -33,7 +33,7 @@ function basksc_allowed_redirect_hosts($hosts)
 add_filter('allowed_redirect_hosts', 'basksc_allowed_redirect_hosts', 10, 1);
 
 // 4文字以上のプレフィックスを使用
-define('BASKSC_VERSION', '1.0.5.1');
+define('BASKSC_VERSION', '1.0.5.2');
 define('BASKSC_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BASKSC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
@@ -130,6 +130,36 @@ function basksc_send_telemetry_event($action, $name = '')
         'sslverify' => true,
     ));
 }
+
+/**
+ * Matomo送信時にUser-Agentをブラウザに偽装（Bot除外を回避）
+ *
+ * basksc_get_matomo_endpoint() で取得したエンドポイント宛のリクエストのみに限定
+ * （他プラグインが利用する Matomo には影響を与えない）
+ *
+ * @since 1.0.5.2
+ */
+add_filter('http_headers_useragent', function ($user_agent, $url) {
+    $endpoint = basksc_get_matomo_endpoint();
+    if (empty($endpoint)) {
+        return $user_agent;
+    }
+
+    $endpoint_host = parse_url($endpoint, PHP_URL_HOST);
+    $request_host  = parse_url($url, PHP_URL_HOST);
+    $request_path  = (string) parse_url($url, PHP_URL_PATH);
+
+    if (
+        !empty($endpoint_host) &&
+        !empty($request_host) &&
+        $endpoint_host === $request_host &&
+        strpos($request_path, 'matomo.php') !== false
+    ) {
+        return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+    }
+
+    return $user_agent;
+}, 10, 2);
 
 /**
  * フロントエンド用アセットを登録
@@ -288,7 +318,38 @@ function basketball_scorebook_settings_page()
     ?>
     <div class="wrap">
         <h2><?php echo esc_html__('Basketball Scorebook - Settings and Usage', 'basketball-scorebook'); ?></h2>
+        <div class="notice notice-info" style="margin-top: 16px; padding: 12px 12px;">
+            <p style="margin: 0 0 8px;">
+                <strong><?php echo esc_html__('Privacy / Data Storage', 'basketball-scorebook'); ?></strong><br>
+                <?php echo esc_html__('Your scorebook data is saved in your browser (LocalStorage). It is not saved to the WordPress database.', 'basketball-scorebook'); ?><br>
+                <?php echo esc_html__('For important games, we recommend exporting JSON as a backup.', 'basketball-scorebook'); ?>
+            </p>
+            <form method="post" action="options.php" style="margin: 0;">
+                <?php
+                settings_fields('basksc_settings');
+                ?>
+                <p style="margin: 0 0 8px;">
+                    <strong><?php echo esc_html__('Anonymous Usage Statistics (Opt-in)', 'basketball-scorebook'); ?></strong>
+                </p>
+                <label style="display: inline-flex; align-items: center; gap: 8px;">
+                    <input type="hidden" name="<?php echo esc_attr(BASKSC_OPTION_TELEMETRY_OPT_IN); ?>" value="0">
+                    <input type="checkbox" name="<?php echo esc_attr(BASKSC_OPTION_TELEMETRY_OPT_IN); ?>" value="1" <?php checked($telemetry_opt_in); ?>>
+                    <span><?php echo esc_html__('Send anonymous usage events to help improve this plugin (default: OFF).', 'basketball-scorebook'); ?></span>
+                </label>
+                <p class="description" style="margin-top: 8px; margin-bottom: 8px;">
+                    <?php echo esc_html__('We only send minimal event data (plugin version, WP/PHP version, locale, and event name). We do not send your site URL, email address, or any scorebook contents.', 'basketball-scorebook'); ?>
+                </p>
+                <?php submit_button(__('Save Changes', 'basketball-scorebook'), 'secondary', 'submit', false); ?>
+            </form>
+        </div>
+
         <p><?php echo esc_html__('Please add the following shortcode to any post or page. We recommend using the widest page template (full-width, etc.) for the best experience.', 'basketball-scorebook'); ?></p>
+        <div class="basksc-code-box">
+            <code id="basksc-shortcode">[basketball_scorebook]</code>
+            <button type="button" class="button button-secondary" data-clipboard-target="basksc-shortcode">
+                <?php echo esc_html__('Copy', 'basketball-scorebook'); ?>
+            </button>
+        </div>
 
         <?php if ($show_review_prompt) : ?>
             <div class="notice notice-info" style="padding: 12px 12px;">
@@ -337,34 +398,6 @@ function basketball_scorebook_settings_page()
                 </p>
             </div>
         <?php endif; ?>
-
-        <h3><?php echo esc_html__('Privacy / Data Storage', 'basketball-scorebook'); ?></h3>
-        <p>
-            <?php echo esc_html__('Your scorebook data is saved in your browser (LocalStorage). It is not saved to the WordPress database.', 'basketball-scorebook'); ?>
-            <?php echo esc_html__('For important games, we recommend exporting JSON as a backup.', 'basketball-scorebook'); ?>
-        </p>
-
-        <h3><?php echo esc_html__('Anonymous Usage Statistics (Opt-in)', 'basketball-scorebook'); ?></h3>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields('basksc_settings');
-            ?>
-            <label style="display: inline-flex; align-items: center; gap: 8px;">
-                <input type="checkbox" name="<?php echo esc_attr(BASKSC_OPTION_TELEMETRY_OPT_IN); ?>" value="1" <?php checked($telemetry_opt_in); ?>>
-                <span><?php echo esc_html__('Send anonymous usage events to help improve this plugin (default: OFF).', 'basketball-scorebook'); ?></span>
-            </label>
-            <p class="description" style="margin-top: 8px;">
-                <?php echo esc_html__('We only send minimal event data (plugin version, WP/PHP version, locale, and event name). We do not send your site URL, email address, or any scorebook contents.', 'basketball-scorebook'); ?>
-            </p>
-            <?php submit_button(__('Save Changes', 'basketball-scorebook')); ?>
-        </form>
-
-        <div class="basksc-code-box">
-            <code id="basksc-shortcode">[basketball_scorebook]</code>
-            <button type="button" class="button button-secondary" data-clipboard-target="basksc-shortcode">
-                <?php echo esc_html__('Copy', 'basketball-scorebook'); ?>
-            </button>
-        </div>
 
         <h3><?php echo esc_html__('Height Customization', 'basketball-scorebook'); ?></h3>
         <p>

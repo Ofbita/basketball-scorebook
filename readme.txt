@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.5.1
+Stable Tag: 1.0.5.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,11 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 
 == Changelog ==
 
+= 1.0.5.2 =
+
+* Fixed: Settings page now reliably saves when turning anonymous usage statistics (telemetry) back OFF, by always posting an explicit `0` value for the opt-in checkbox.
+* Improved: When telemetry is opted in, anonymous events sent to Matomo now use a browser-like User-Agent string so they are less likely to be discarded by bot/robot filters (still opt-in only).
+
 = 1.0.5.1 =
 
 * Fixed: Added missing Japanese (and en_US) translations for the settings page (Privacy / Data Storage, Anonymous Usage Statistics, Save Changes, and review prompt strings: Thanks for using…, Leave a Review, View Help, Not Now)
@@ -120,6 +125,11 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.5.2 =
+
+Recommended for sites that have opted into anonymous usage statistics.  
+This update ensures the opt-in setting can safely be turned OFF again from the settings page and makes Matomo-based anonymous event tracking more robust (still opt-in only).
 
 = 1.0.5.1 =
 
