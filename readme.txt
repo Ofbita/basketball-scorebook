@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.5.2
+Stable Tag: 1.0.5.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,10 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 
 == Changelog ==
 
+= 1.0.5.3 =
+
+* Fixed: Resolved "Update failed" error when saving posts while using this plugin together with pubsubhubbub or similar plugins.
+
 = 1.0.5.2 =
 
 * Fixed: Settings page now reliably saves when turning anonymous usage statistics (telemetry) back OFF, by always posting an explicit `0` value for the opt-in checkbox.
@@ -125,6 +129,10 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.5.3 =
+
+Fixes "Update failed" error when saving posts with pubsubhubbub or similar plugins. Recommended if you use these plugins together.
 
 = 1.0.5.2 =
 

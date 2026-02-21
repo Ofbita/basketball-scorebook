@@ -3,7 +3,7 @@
  * Plugin Name: Basketball Scorebook
  * Plugin URI: https://doc778.com/scorebook/
  * Description: Free digital basketball scorebook for games. Features timestamps, LocalStorage saving, and PDF printing support.
- * Version: 1.0.5.2
+ * Version: 1.0.5.3
  * Author: ofbita
  * Author URI: https://doc778.com/
  * Copyright: 2025 ofbita / Basketball Manual
@@ -33,7 +33,7 @@ function basksc_allowed_redirect_hosts($hosts)
 add_filter('allowed_redirect_hosts', 'basksc_allowed_redirect_hosts', 10, 1);
 
 // 4文字以上のプレフィックスを使用
-define('BASKSC_VERSION', '1.0.5.2');
+define('BASKSC_VERSION', '1.0.5.3');
 define('BASKSC_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('BASKSC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
@@ -137,9 +137,9 @@ function basksc_send_telemetry_event($action, $name = '')
  * basksc_get_matomo_endpoint() で取得したエンドポイント宛のリクエストのみに限定
  * （他プラグインが利用する Matomo には影響を与えない）
  *
- * @since 1.0.5.2
+ * @since 1.0.5.3
  */
-add_filter('http_headers_useragent', function ($user_agent, $url) {
+add_filter('http_headers_useragent', function ($user_agent, $url = '') {
     $endpoint = basksc_get_matomo_endpoint();
     if (empty($endpoint)) {
         return $user_agent;

@@ -4,7 +4,7 @@ Tags: basketball, scorebook, sports, timer, pdf
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.5.2
+Stable Tag: 1.0.5.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == 変更履歴 ==
 
+= 1.0.5.3 =
+
+* 修正: pubsubhubbub 等のプラグインと併用時に記事保存で「更新に失敗しました」が発生するエラーを修正
+
 = 1.0.5.2 =
 
 * 修正: 匿名利用統計（オプトイン）設定をOFFに戻した場合でも確実に保存されるよう、設定画面のチェックボックス送信ロジックを改善
@@ -125,6 +129,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 * 初回リリース
 
 == アップグレード通知 ==
+
+= 1.0.5.3 =
+
+pubsubhubbub 等のプラグインと併用時に記事保存で発生する「更新に失敗しました」エラーを修正しました。該当する環境ではアップデートを推奨します。
 
 = 1.0.5.2 =
 
