@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable Tag: 1.0.4
+Stable Tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,11 @@ Yes. Select "Print/PDF". The layout is optimized for A4 landscape.
 
 Yes. The scorebook auto-saves to your browser's LocalStorage every time you make a change.
 
+= Does this plugin send any data outside my site? =
+
+By default, **No**. The plugin does not send any analytics/telemetry unless you explicitly opt in from the settings page.
+If you opt in, the plugin sends **anonymous event counts only** (plugin version, WordPress/PHP version, locale, and event name). It does not send your site URL, email address, or any scorebook contents.
+
 == Screenshots ==
 
 1. Main scoreboard interface with real-time scoring
@@ -74,6 +79,30 @@ Yes. The scorebook auto-saves to your browser's LocalStorage every time you make
 4. Print preview optimized for A4 landscape
 
 == Changelog ==
+
+= 1.0.6 =
+
+* Added: Suggested privacy policy text via `wp_add_privacy_policy_content()` so site owners can clearly describe LocalStorage usage and optional anonymous telemetry.
+* Improved: Clarified privacy / data storage wording (admin screen, FAQ, and privacy‑policy text) to better explain what data is stored locally and what may be sent when telemetry is opted in.
+
+= 1.0.5.3 =
+
+* Fixed: Resolved "Update failed" error when saving posts while using this plugin together with pubsubhubbub or similar plugins.
+
+= 1.0.5.2 =
+
+* Fixed: Settings page now reliably saves when turning anonymous usage statistics (telemetry) back OFF, by always posting an explicit `0` value for the opt-in checkbox.
+* Improved: When telemetry is opted in, anonymous events sent to Matomo now use a browser-like User-Agent string so they are less likely to be discarded by bot/robot filters (still opt-in only).
+
+= 1.0.5.1 =
+
+* Fixed: Added missing Japanese (and en_US) translations for the settings page (Privacy / Data Storage, Anonymous Usage Statistics, Save Changes, and review prompt strings: Thanks for using…, Leave a Review, View Help, Not Now)
+
+= 1.0.5 =
+
+* Added: Opt-in anonymous usage statistics (events only, default OFF)
+* Added: Review prompt shown on the settings page after 7 days (one-time per user)
+* Updated: Documentation and settings page privacy notes (data is stored in the browser)
 
 = 1.0.4 =
 
@@ -105,6 +134,27 @@ Yes. The scorebook auto-saves to your browser's LocalStorage every time you make
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.6 =
+
+Adds suggested privacy policy text and clarifies how data is stored in the browser and what anonymous telemetry may be sent when opted in. Recommended if you want clearer privacy documentation for your site.
+
+= 1.0.5.3 =
+
+Fixes "Update failed" error when saving posts with pubsubhubbub or similar plugins. Recommended if you use these plugins together.
+
+= 1.0.5.2 =
+
+Recommended for sites that have opted into anonymous usage statistics.  
+This update ensures the opt-in setting can safely be turned OFF again from the settings page and makes Matomo-based anonymous event tracking more robust (still opt-in only).
+
+= 1.0.5.1 =
+
+Translation update: settings page and review prompt are now fully translated in Japanese (and en_US). Recommended if you use the plugin in Japanese.
+
+= 1.0.5 =
+
+Adds optional (opt-in) anonymous usage statistics and a gentle review prompt in the settings page.
 
 = 1.0.4 =
 

@@ -323,7 +323,7 @@
                         </button>
 
                         <button 
-                            @click="window.print()"
+                            @click="onPrint()"
                             class="bsb-btn bsb-btn--print"
                             title="スコアシートだけをA4ヨコで印刷 / PDF保存"
                         >
@@ -331,7 +331,7 @@
                             <span class="bsb-btn-label">印刷 / PDF</span>
                         </button>
                         <button 
-                            @click="window.open('https://doc778.com/help-scorebook', '_blank')"
+                            @click="onHelp()"
                             class="bsb-btn bsb-btn--help"
                             title="使い方を見る"
                         >
@@ -997,6 +997,11 @@
         </button>
     </div>
 
+    <script src="./telemetry.js"></script>
+    <script src="./shared/schema-200.js"></script>
+    <script src="./shared/classic-adapter.js"></script>
+    <script src="./shared/mini-adapter.js"></script>
+    <script src="./shared/bask-datastore.js"></script>
     <script>
         // 元の scoresheet() ロジックをベースに、スクショ用メソッドを追加
         function scoresheet() {
@@ -1043,6 +1048,8 @@
                 }
                 return scores;
             }
+
+            const _store = new BaskDataStore({ adapterType: 'classic' });
 
             return {
                 // ★追加：再描画トリガー
@@ -1255,10 +1262,10 @@
                     });
                 },
 
-                // ===== v1.0.3: meta の不足キーを補完（後方互換）＋ schemaVersion を 103 に揃える =====
+                // ===== meta の不足キーを補完（後方互換）＋ schemaVersion を 200 まで許容 =====
                 ensureMetaDefaults() {
                     const defaults = {
-                        schemaVersion: 103,
+                        schemaVersion: 200,
                         tournamentName: '',
                         gameNo: '',
                         time: '',
@@ -1270,6 +1277,8 @@
                         shotClock: '',
                         homeUniformColor: '',
                         awayUniformColor: '',
+                        winnerTeam: '',
+                        gameEndTime: '',
                     };
 
                     if (!this.meta || typeof this.meta !== 'object') {
@@ -1303,104 +1312,112 @@
                         if (!e.period) e.period = 'q1';
                     });
                 },
-            
-                init() {
-                    const saved = localStorage.getItem('basketball-scoresheet-v1');
-                    if (saved) {
-                        try {
-                            const data = JSON.parse(saved);
 
-                            // 基本プロパティの復元（memoとrunningScoreはteamsに含まれるため除外）
-                            ['myTeamName', 'opponentTeamName', 'venue', 'date', 'myScore', 'opScore', 'quarterTimes', 'activeTeam', 'meta', 'foulEvents'].forEach(key => {
-                                if (data[key] !== undefined) {
-                                    this[key] = data[key];
-                                }
-                            });
+                buildClassicViewModel() {
+                    this.ensureMetaDefaults();
+                    this.ensureFoulDefaults();
+                    return {
+                        meta: this.meta,
+                        myTeamName: this.myTeamName,
+                        opponentTeamName: this.opponentTeamName,
+                        venue: this.venue,
+                        date: this.date,
+                        myScore: this.myScore,
+                        opScore: this.opScore,
+                        teams: this.teams,
+                        activeTeam: this.activeTeam,
+                        quarterTimes: this.quarterTimes,
+                        foulEvents: this.foulEvents
+                    };
+                },
 
-                            // meta / foulEvents の不足キーを補完（旧データ互換）
-                            this.ensureMetaDefaults();
-                            this.ensureFoulDefaults();
+                buildStoragePayload() {
+                    return _store.buildPayload(this.buildClassicViewModel());
+                },
 
-                            // 新しいデータ構造（teams）がある場合
-                            if (data.teams) {
-                                this.teams = data.teams;
-                                // タイムアウトとファウルのマイグレーション、runningScoreの初期化
-                                ['home', 'away'].forEach(team => {
-                                    if (this.teams[team]) {
-                                        // coach / assistantCoach は teams.{home|away} 直下を正とする（v2.0.0移行準備）
-                                        if (this.teams[team].coach == null) this.teams[team].coach = '';
-                                        if (this.teams[team].assistantCoach == null) this.teams[team].assistantCoach = '';
-                                        if (this.teams[team].coachLicenseNo == null) this.teams[team].coachLicenseNo = '';
-                                        if (this.teams[team].assistantCoachLicenseNo == null) this.teams[team].assistantCoachLicenseNo = '';
-                                        // 旧データが teamState 側に入っていた場合の吸収
-                                        if (this.teams[team].teamState) {
-                                            if (!this.teams[team].coach && this.teams[team].teamState.coach) {
-                                                this.teams[team].coach = this.teams[team].teamState.coach;
-                                            }
-                                            if (!this.teams[team].assistantCoach && this.teams[team].teamState.assistantCoach) {
-                                                this.teams[team].assistantCoach = this.teams[team].teamState.assistantCoach;
-                                            }
-                                        }
-                                        if (this.teams[team].teamState && this.teams[team].teamState.timeouts) {
-                                            this.migrateTimeouts(this.teams[team].teamState.timeouts);
-                                        }
-                                        if (this.teams[team].players) {
-                                            this.migratePlayerFouls(this.teams[team].players);
-                                            // v1.0.3: licenseNo の箱を補完
-                                            this.teams[team].players.forEach(p => {
-                                                if (p && p.licenseNo == null) p.licenseNo = '';
-                                            });
-                                        }
-                                        // runningScoreがない場合は初期化
-                                        if (!this.teams[team].runningScore) {
-                                            this.teams[team].runningScore = createRunningScore();
-                                        }
-                                        // memoがない場合は初期化
-                                        if (!this.teams[team].teamState.memo) {
-                                            this.teams[team].teamState.memo = '';
-                                        }
+                applyClassicViewModel(data) {
+                    ['myTeamName', 'opponentTeamName', 'venue', 'date', 'myScore', 'opScore', 'quarterTimes', 'activeTeam', 'meta', 'foulEvents'].forEach(key => {
+                        if (data[key] !== undefined) {
+                            this[key] = data[key];
+                        }
+                    });
+
+                    this.ensureMetaDefaults();
+                    this.ensureFoulDefaults();
+
+                    if (data.teams) {
+                        this.teams = data.teams;
+                        ['home', 'away'].forEach(team => {
+                            if (this.teams[team]) {
+                                if (this.teams[team].coach == null) this.teams[team].coach = '';
+                                if (this.teams[team].assistantCoach == null) this.teams[team].assistantCoach = '';
+                                if (this.teams[team].coachLicenseNo == null) this.teams[team].coachLicenseNo = '';
+                                if (this.teams[team].assistantCoachLicenseNo == null) this.teams[team].assistantCoachLicenseNo = '';
+                                if (this.teams[team].teamState) {
+                                    if (!this.teams[team].coach && this.teams[team].teamState.coach) {
+                                        this.teams[team].coach = this.teams[team].teamState.coach;
                                     }
-                                });
-                            }
-                            // 旧データ構造（players, teamState）からのマイグレーション
-                            else if (data.players || data.teamState) {
-                                // 旧データをホームチームに移行
-                                if (data.players) {
-                                    this.migratePlayerFouls(data.players);
-                                    this.teams.home.players = data.players;
-                                    // v1.0.3: licenseNo の箱を補完
-                                    this.teams.home.players.forEach(p => {
+                                    if (!this.teams[team].assistantCoach && this.teams[team].teamState.assistantCoach) {
+                                        this.teams[team].assistantCoach = this.teams[team].teamState.assistantCoach;
+                                    }
+                                }
+                                if (this.teams[team].teamState && this.teams[team].teamState.timeouts) {
+                                    this.migrateTimeouts(this.teams[team].teamState.timeouts);
+                                }
+                                if (this.teams[team].players) {
+                                    this.migratePlayerFouls(this.teams[team].players);
+                                    this.teams[team].players.forEach(p => {
                                         if (p && p.licenseNo == null) p.licenseNo = '';
                                     });
                                 }
-                                if (data.teamState) {
-                                    if (data.teamState.timeouts) {
-                                        this.migrateTimeouts(data.teamState.timeouts);
-                                    }
-                                    this.teams.home.teamState = data.teamState;
-                                    // 旧データが teamState 側に入っていた場合の吸収
-                                    if (data.teamState.coach && !this.teams.home.coach) {
-                                        this.teams.home.coach = data.teamState.coach;
-                                    }
-                                    if (data.teamState.assistantCoach && !this.teams.home.assistantCoach) {
-                                        this.teams.home.assistantCoach = data.teamState.assistantCoach;
-                                    }
+                                if (!this.teams[team].runningScore) {
+                                    this.teams[team].runningScore = createRunningScore();
                                 }
-                                // 旧runningScoreがあればホームチームに移行
-                                if (data.runningScore) {
-                                    this.teams.home.runningScore = data.runningScore;
+                                if (!this.teams[team].teamState.memo) {
+                                    this.teams[team].teamState.memo = '';
                                 }
                             }
-                            
-                            // 旧データ構造のmemoがあればホームチームに移行（後方互換性）
-                            if (data.memo && (!data.teams || !data.teams.home || !data.teams.home.teamState || !data.teams.home.teamState.memo)) {
-                                if (!this.teams.home.teamState.memo) {
-                                    this.teams.home.teamState.memo = data.memo;
-                                }
-                            }
-                        } catch (e) {
-                            console.error('Failed to load data', e);
+                        });
+                    } else if (data.players || data.teamState) {
+                        if (data.players) {
+                            this.migratePlayerFouls(data.players);
+                            this.teams.home.players = data.players;
+                            this.teams.home.players.forEach(p => {
+                                if (p && p.licenseNo == null) p.licenseNo = '';
+                            });
                         }
+                        if (data.teamState) {
+                            if (data.teamState.timeouts) {
+                                this.migrateTimeouts(data.teamState.timeouts);
+                            }
+                            this.teams.home.teamState = data.teamState;
+                            if (data.teamState.coach && !this.teams.home.coach) {
+                                this.teams.home.coach = data.teamState.coach;
+                            }
+                            if (data.teamState.assistantCoach && !this.teams.home.assistantCoach) {
+                                this.teams.home.assistantCoach = data.teamState.assistantCoach;
+                            }
+                        }
+                        if (data.runningScore) {
+                            this.teams.home.runningScore = data.runningScore;
+                        }
+                    }
+
+                    if (data.memo && (!data.teams || !data.teams.home || !data.teams.home.teamState || !data.teams.home.teamState.memo)) {
+                        if (!this.teams.home.teamState.memo) {
+                            this.teams.home.teamState.memo = data.memo;
+                        }
+                    }
+                },
+            
+                init() {
+                    try {
+                        const viewModel = _store.load();
+                        if (viewModel) {
+                            this.applyClassicViewModel(viewModel);
+                        }
+                    } catch (e) {
+                        console.error('Failed to load data', e);
                     }
             
                     setInterval(() => {
@@ -1414,32 +1431,23 @@
                     // ★追加：復元が終わったあとに refreshKey をインクリメント
                     this.refreshKey++;
                     this.syncRunningScoreSelects(this.activeTeam);
+
+                    try {
+                        if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                            window.BASKSC_TELEMETRY.track('app_loaded');
+                        }
+                    } catch (e) {}
                 },
             
                 saveData() {
                     if (this.isResetting) return;
-                    this.ensureMetaDefaults();
-                    this.ensureFoulDefaults();
-                    const dataToSave = {
-                        meta: this.meta,
-                        myTeamName: this.myTeamName,
-                        opponentTeamName: this.opponentTeamName,
-                        venue: this.venue,
-                        date: this.date,
-                        myScore: this.myScore,
-                        opScore: this.opScore,
-                        teams: this.teams,
-                        activeTeam: this.activeTeam,
-                        quarterTimes: this.quarterTimes,
-                        foulEvents: this.foulEvents
-                    };
-                    localStorage.setItem('basketball-scoresheet-v1', JSON.stringify(dataToSave));
+                    _store.save(this.buildClassicViewModel());
                 },
             
                 clearData() {
                     if(confirm('入力データを全て消去してリセットしますか？\nこの操作は取り消せません。')) {
                         this.isResetting = true;
-                        localStorage.removeItem('basketball-scoresheet-v1');
+                        _store.clear();
                         location.reload();
                     }
                 },
@@ -1448,23 +1456,7 @@
 
                 // 現在の状態をJSONファイルとしてダウンロード（バックアップ/テンプレート用）
                 exportJSON() {
-                    // 古いデータを読み込んでいる場合でも、出力にキーを含める
-                    this.ensureMetaDefaults();
-                    this.ensureFoulDefaults();
-                    const dataToExport = {
-                        meta: this.meta,
-                        myTeamName: this.myTeamName,
-                        opponentTeamName: this.opponentTeamName,
-                        venue: this.venue,
-                        date: this.date,
-                        myScore: this.myScore,
-                        opScore: this.opScore,
-                        teams: this.teams,
-                        activeTeam: this.activeTeam,
-                        quarterTimes: this.quarterTimes,
-                        foulEvents: this.foulEvents
-                    };
-
+                    const dataToExport = _store.buildPayload(this.buildClassicViewModel());
                     const json = JSON.stringify(dataToExport, null, 2);
                     const blob = new Blob([json], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
@@ -1476,6 +1468,12 @@
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
+
+                    try {
+                        if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                            window.BASKSC_TELEMETRY.track('export_json');
+                        }
+                    } catch (e) {}
                 },
 
                 // Import ボタンから隠し input[type=file] を開く
@@ -1500,112 +1498,49 @@
                             }
 
                             const data = JSON.parse(text);
+                            const viewModel = _store.importJSON(data);
+                            this.applyClassicViewModel(viewModel);
 
-                            // 基本プロパティの復元（memoとrunningScoreはteamsに含まれるため除外）
-                            ['myTeamName', 'opponentTeamName', 'venue', 'date', 'myScore', 'opScore', 'quarterTimes', 'activeTeam', 'meta', 'foulEvents'].forEach(key => {
-                                if (data[key] !== undefined) {
-                                    this[key] = data[key];
-                                }
-                            });
-
-                            // meta / foulEvents の不足キーを補完（旧データ互換）
-                            this.ensureMetaDefaults();
-                            this.ensureFoulDefaults();
-
-                            // 新しいデータ構造（teams）がある場合
-                            if (data.teams) {
-                                this.teams = data.teams;
-                                // タイムアウトとファウルのマイグレーション、runningScoreの初期化
-                                ['home', 'away'].forEach(team => {
-                                    if (this.teams[team]) {
-                                        // coach / assistantCoach は teams.{home|away} 直下を正とする（v2.0.0移行準備）
-                                        if (this.teams[team].coach == null) this.teams[team].coach = '';
-                                        if (this.teams[team].assistantCoach == null) this.teams[team].assistantCoach = '';
-                                        if (this.teams[team].coachLicenseNo == null) this.teams[team].coachLicenseNo = '';
-                                        if (this.teams[team].assistantCoachLicenseNo == null) this.teams[team].assistantCoachLicenseNo = '';
-                                        // 旧データが teamState 側に入っていた場合の吸収
-                                        if (this.teams[team].teamState) {
-                                            if (!this.teams[team].coach && this.teams[team].teamState.coach) {
-                                                this.teams[team].coach = this.teams[team].teamState.coach;
-                                            }
-                                            if (!this.teams[team].assistantCoach && this.teams[team].teamState.assistantCoach) {
-                                                this.teams[team].assistantCoach = this.teams[team].teamState.assistantCoach;
-                                            }
-                                        }
-                                        if (this.teams[team].teamState && this.teams[team].teamState.timeouts) {
-                                            this.migrateTimeouts(this.teams[team].teamState.timeouts);
-                                        }
-                                        if (this.teams[team].players) {
-                                            this.migratePlayerFouls(this.teams[team].players);
-                                            // v1.0.3: licenseNo の箱を補完
-                                            this.teams[team].players.forEach(p => {
-                                                if (p && p.licenseNo == null) p.licenseNo = '';
-                                            });
-                                        }
-                                        // runningScoreがない場合は初期化
-                                        if (!this.teams[team].runningScore) {
-                                            this.teams[team].runningScore = createRunningScore();
-                                        }
-                                        // memoがない場合は初期化
-                                        if (!this.teams[team].teamState.memo) {
-                                            this.teams[team].teamState.memo = '';
-                                        }
-                                    }
-                                });
-                            }
-                            // 旧データ構造（players, teamState）からのマイグレーション
-                            else if (data.players || data.teamState) {
-                                // 旧データをホームチームに移行
-                                if (data.players) {
-                                    this.migratePlayerFouls(data.players);
-                                    this.teams.home.players = data.players;
-                                    // v1.0.3: licenseNo の箱を補完
-                                    this.teams.home.players.forEach(p => {
-                                        if (p && p.licenseNo == null) p.licenseNo = '';
-                                    });
-                                }
-                                if (data.teamState) {
-                                    if (data.teamState.timeouts) {
-                                        this.migrateTimeouts(data.teamState.timeouts);
-                                    }
-                                    this.teams.home.teamState = data.teamState;
-                                    // 旧データが teamState 側に入っていた場合の吸収
-                                    if (data.teamState.coach && !this.teams.home.coach) {
-                                        this.teams.home.coach = data.teamState.coach;
-                                    }
-                                    if (data.teamState.assistantCoach && !this.teams.home.assistantCoach) {
-                                        this.teams.home.assistantCoach = data.teamState.assistantCoach;
-                                    }
-                                }
-                                // 旧runningScoreがあればホームチームに移行
-                                if (data.runningScore) {
-                                    this.teams.home.runningScore = data.runningScore;
-                                }
-                            }
-                            
-                            // 旧データ構造のmemoがあればホームチームに移行（後方互換性）
-                            if (data.memo && (!data.teams || !data.teams.home || !data.teams.home.teamState || !data.teams.home.teamState.memo)) {
-                                if (!this.teams.home.teamState.memo) {
-                                    this.teams.home.teamState.memo = data.memo;
-                                }
-                            }
-
-                            // LocalStorage へも保存
-                            this.saveData();
-                            // ★追加：インポート直後の再描画を安定させるため
                             this.refreshKey++;
                             this.syncRunningScoreSelects(this.activeTeam);
+                            try {
+                                if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                                    window.BASKSC_TELEMETRY.track('import_json_success');
+                                }
+                            } catch (e) {}
                             alert('JSONファイルからスコアシートを読み込みました。');
                         } catch (err) {
                             console.error(err);
+                            try {
+                                if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                                    window.BASKSC_TELEMETRY.track('import_json_fail');
+                                }
+                            } catch (e) {}
                             alert('JSONファイルの読み込みに失敗しました。ファイル内容を確認してください。');
                         } finally {
-                            // 同じファイルを再度選択できるようにリセット
                             event.target.value = '';
                         }
                     };
 
                     reader.readAsText(file, 'utf-8');
+                },
+
+                onPrint() {
+                    try {
+                        if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                            window.BASKSC_TELEMETRY.track('print_pdf');
+                        }
+                    } catch (e) {}
+                    window.print();
+                },
+
+                onHelp() {
+                    try {
+                        if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                            window.BASKSC_TELEMETRY.track('help_opened');
+                        }
+                    } catch (e) {}
+                    window.open('https://doc778.com/help-scorebook', '_blank');
                 }
             }
         }
