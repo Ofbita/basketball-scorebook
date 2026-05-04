@@ -1,24 +1,150 @@
-name: Deploy to WordPress.org
+name: Check and Deploy to WordPress.org
 
 on:
+  push:
+    branches: [main]
   release:
-    types: [published]  # GitHubでリリースを公開したとき
+    types: [published]
 
 jobs:
-  deploy:
-    name: Deploy Plugin to WordPress SVN
+  # ─────────────────────────────────────────────
+  # JOB 1: PHP構文チェック + バージョン整合性チェック
+  # push・release の両方で実行
+  # ─────────────────────────────────────────────
+  check:
+    name: Lint & Version Check
     runs-on: ubuntu-latest
 
     steps:
-      # 1. リポジトリをチェックアウト
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. WordPress.org プラグインデプロイアクションを使用
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      # basketball-scorebook.php の全PHPファイルを構文チェック
+      - name: PHP Syntax Check
+        run: |
+          echo "=== PHP Syntax Check ==="
+          find . -name "*.php" \
+            -not -path "./.git/*" \
+            -not -path "./vendor/*" \
+            | sort \
+            | xargs -I{} php -l {}
+          echo "✅ All PHP files passed syntax check."
+
+      # basketball-scorebook.php の Version: と
+      # readme.txt / readme-ja.txt の Stable tag: が一致しているか確認
+      - name: Version Consistency Check
+        run: |
+          echo "=== Version Consistency Check ==="
+
+          PHP_VER=$(grep -oP '(?<=\* Version: )[\d.]+' basketball-scorebook.php || true)
+          README_EN_VER=$(grep -oiP '(?<=Stable tag: )[\d.]+' readme.txt || true)
+          README_JA_VER=$(grep -oiP '(?<=Stable tag: )[\d.]+' readme-ja.txt || true)
+
+          echo "basketball-scorebook.php Version : $PHP_VER"
+          echo "readme.txt          Stable tag  : $README_EN_VER"
+          echo "readme-ja.txt       Stable tag  : $README_JA_VER"
+
+          FAILED=0
+
+          if [ -z "$PHP_VER" ]; then
+            echo "❌ basketball-scorebook.php に '* Version:' が見つかりません"
+            FAILED=1
+          fi
+
+          if [ -n "$README_EN_VER" ] && [ "$PHP_VER" != "$README_EN_VER" ]; then
+            echo "❌ readme.txt のバージョン ($README_EN_VER) が .php ($PHP_VER) と一致しません"
+            FAILED=1
+          fi
+
+          if [ -n "$README_JA_VER" ] && [ "$PHP_VER" != "$README_JA_VER" ]; then
+            echo "❌ readme-ja.txt のバージョン ($README_JA_VER) が .php ($PHP_VER) と一致しません"
+            FAILED=1
+          fi
+
+          if [ "$FAILED" = "1" ]; then
+            exit 1
+          fi
+
+          echo "✅ All version numbers are consistent: $PHP_VER"
+
+  # ─────────────────────────────────────────────
+  # JOB 2: .pot ファイル自動生成
+  # PHPファイルが変更されたpushのみ実行
+  # ─────────────────────────────────────────────
+  generate-pot:
+    name: Generate POT File
+    runs-on: ubuntu-latest
+    # リリース時は不要・pushのみ実行
+    if: github.event_name == 'push'
+    # checkが通過した場合のみ実行
+    needs: check
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # botによる自動コミットのためトークンを使用
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install WP-CLI
+        run: |
+          curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp
+          wp --info --allow-root
+
+      - name: Generate POT file
+        run: |
+          wp i18n make-pot . languages/basketball-scorebook.pot \
+            --domain=basketball-scorebook \
+            --exclude=".git,vendor,node_modules" \
+            --allow-root
+          echo "✅ POT file generated: languages/basketball-scorebook.pot"
+
+      - name: Commit POT file if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add languages/basketball-scorebook.pot
+          if git diff --staged --quiet; then
+            echo "ℹ️ POT file unchanged. No commit needed."
+          else
+            git commit -m "chore: update POT file [skip ci]"
+            git push
+            echo "✅ POT file committed and pushed."
+          fi
+
+  # ─────────────────────────────────────────────
+  # JOB 3: WordPress.org SVN へデプロイ
+  # releaseのpublishのみ実行・checkが通過した場合のみ
+  # ─────────────────────────────────────────────
+  deploy:
+    name: Deploy Plugin to WordPress SVN
+    runs-on: ubuntu-latest
+    # リリース公開時のみデプロイ
+    if: github.event_name == 'release'
+    # checkが通過した場合のみ実行
+    needs: check
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Deploy to WordPress.org Plugin Directory
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SLUG: basketball-scorebook  # WordPress.org プラグインスラッグ
-          COMMIT_MESSAGE: "Release version ${{ github.event.release.tag_name }}"
+          SLUG: basketball-scorebook
+          # GitHubリリースのタグ名をSVNコミットコメントに使用
+          COMMIT_MESSAGE: "Release ${{ github.event.release.tag_name }}"
