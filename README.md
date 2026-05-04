@@ -13,9 +13,9 @@ Perfect for coaches, table officials, and fans who want more than just a simple 
 
 ## 🏀 Live Demo & Usage
 Experience the full functionality without installation:
-- **English Demo:** [https://doc778.com/scorebook?lang=en](https://doc778.com/scorebook?lang=en)
+- **English Demo:** [https://doc778.com/scorebook-en](https://doc778.com/scorebook-en)
 - **Japanese Demo:** [https://doc778.com/scorebook/](https://doc778.com/scorebook/)
-- **Usage Guide:** [https://doc778.com/help-scorebook?lang=en](https://doc778.com/help-scorebook?lang=en)
+- **Usage Guide:** [https://doc778.com/help-scorebook-en](https://doc778.com/help-scorebook-en)
 
 ---
 ![Basketball Scorebook Dashboard](https://doc778.com/wp-content/uploads/2025/12/image-1.png)

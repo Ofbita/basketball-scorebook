@@ -12,8 +12,8 @@
 ## 🏀 デモ・使い方
 インストール不要で、すべての機能をお試しいただけます：
 - **日本語デモ:** [https://doc778.com/scorebook/](https://doc778.com/scorebook/)
-- **英語デモ:** [https://doc778.com/scorebook?lang=en](https://doc778.com/scorebook?lang=en)
-- **使い方ガイド (英語):** [https://doc778.com/help-scorebook?lang=en](https://doc778.com/help-scorebook?lang=en)
+- **英語デモ:** [https://doc778.com/scorebook-en](https://doc778.com/scorebook-en)
+- **使い方ガイド (英語):** [https://doc778.com/help-scorebook-en](https://doc778.com/help-scorebook-en)
 
 ---
 ![Basketball Scorebook Dashboard](https://doc778.com/wp-content/uploads/2025/12/image-1.png)
