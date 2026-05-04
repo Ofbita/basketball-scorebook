@@ -1,180 +1,191 @@
-# Copyright (C) 2025 ofbita / Basketball Manual
-# This file is distributed under the same license as the Basketball Scorebook package.
+# Copyright (C) 2026 ofbita
+# This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Basketball Scorebook 1.0.5.1\n"
-"Report-Msgid-Bugs-To: https://doc778.com/scorebook/\n"
-"POT-Creation-Date: 2026-02-15 12:00+0000\n"
+"Project-Id-Version: Basketball Scorebook 1.0.6\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/basketball-scorebook\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-05-04T08:29:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: ofbita <https://doc778.com/>\n"
-"Language-Team: English <LL@li.org>\n"
-"X-Generator: Manual Edit\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: basketball-scorebook\n"
 
-#: basketball-scorebook.php:71 basketball-scorebook.php:126
+#. Plugin Name of the plugin
+#: basketball-scorebook.php
+#: basketball-scorebook.php:256
+#: basketball-scorebook.php:311
 msgid "Basketball Scorebook"
 msgstr ""
 
-#: basketball-scorebook.php:77
+#. Plugin URI of the plugin
+#: basketball-scorebook.php
+msgid "https://doc778.com/scorebook/"
+msgstr ""
+
+#. Description of the plugin
+#: basketball-scorebook.php
+msgid "Free digital basketball scorebook for games. Features timestamps, LocalStorage saving, and PDF printing support."
+msgstr ""
+
+#. Author of the plugin
+#: basketball-scorebook.php
+msgid "ofbita"
+msgstr ""
+
+#. Author URI of the plugin
+#: basketball-scorebook.php
+msgid "https://doc778.com/"
+msgstr ""
+
+#: basketball-scorebook.php:262
 msgid "📱 Recommended Environment:"
 msgstr ""
 
-#: basketball-scorebook.php:78
-msgid ""
-"We recommend using landscape mode on iPad or PC with Safari / Chrome (LINE "
-"in-app browser is not recommended)."
+#: basketball-scorebook.php:263
+msgid "We recommend using landscape mode on iPad or PC with Safari / Chrome (LINE in-app browser is not recommended)."
 msgstr ""
 
-#: basketball-scorebook.php:80
+#: basketball-scorebook.php:265
 msgid "💾 Data Storage:"
 msgstr ""
 
-#: basketball-scorebook.php:81
-msgid ""
-"Your input is automatically saved to browser LocalStorage. Data will be "
-"restored when you revisit using the same device and browser."
+#: basketball-scorebook.php:266
+msgid "Your input is automatically saved to browser LocalStorage. Data will be restored when you revisit using the same device and browser."
 msgstr ""
 
-#: basketball-scorebook.php:83
+#: basketball-scorebook.php:268
 msgid "🖨️ Print / PDF:"
 msgstr ""
 
-#: basketball-scorebook.php:84
-msgid ""
-"You can print or save as PDF in A4 landscape format from the \"Print / PDF\" "
-"button in the app."
+#: basketball-scorebook.php:269
+msgid "You can print or save as PDF in A4 landscape format from the \"Print / PDF\" button in the app."
 msgstr ""
 
-#: basketball-scorebook.php:125
+#: basketball-scorebook.php:310
 msgid "Basketball Scorebook Settings"
 msgstr ""
 
-#: basketball-scorebook.php:141
+#: basketball-scorebook.php:352
 msgid "Basketball Scorebook - Settings and Usage"
 msgstr ""
 
-#: basketball-scorebook.php:142
-msgid ""
-"Please add the following shortcode to any post or page. We recommend using "
-"the widest page template (full-width, etc.) for the best experience."
-msgstr ""
-
-#: basketball-scorebook.php:296
-msgid "Thanks for using Basketball Scorebook!"
-msgstr ""
-
-#: basketball-scorebook.php:297
-msgid "If you find it helpful, a review would really support ongoing development."
-msgstr ""
-
-#: basketball-scorebook.php:329
-msgid "Leave a Review"
-msgstr ""
-
-#: basketball-scorebook.php:332
-msgid "View Help"
-msgstr ""
-
-#: basketball-scorebook.php:335
-msgid "Not Now"
-msgstr ""
-
-#: basketball-scorebook.php:341
+#: basketball-scorebook.php:355
 msgid "Privacy / Data Storage"
 msgstr ""
 
-#: basketball-scorebook.php:343
+#: basketball-scorebook.php:356
 msgid "Your scorebook data is saved in your browser (LocalStorage). It is not saved to the WordPress database."
 msgstr ""
 
-#: basketball-scorebook.php:344
+#: basketball-scorebook.php:357
 msgid "For important games, we recommend exporting JSON as a backup."
 msgstr ""
 
-#: basketball-scorebook.php:347
+#: basketball-scorebook.php:364
 msgid "Anonymous Usage Statistics (Opt-in)"
 msgstr ""
 
-#: basketball-scorebook.php:354
+#: basketball-scorebook.php:369
 msgid "Send anonymous usage events to help improve this plugin (default: OFF)."
 msgstr ""
 
-#: basketball-scorebook.php:357
+#: basketball-scorebook.php:372
 msgid "We only send minimal event data (plugin version, WP/PHP version, locale, and event name). We do not send your site URL, email address, or any scorebook contents."
 msgstr ""
 
-#: basketball-scorebook.php:359
+#: basketball-scorebook.php:374
 msgid "Save Changes"
 msgstr ""
 
-#: basketball-scorebook.php:147 basketball-scorebook.php:162
+#: basketball-scorebook.php:378
+msgid "Please add the following shortcode to any post or page. We recommend using the widest page template (full-width, etc.) for the best experience."
+msgstr ""
+
+#: basketball-scorebook.php:382
+#: basketball-scorebook.php:445
 msgid "Copy"
 msgstr ""
 
-#: basketball-scorebook.php:151
+#: basketball-scorebook.php:389
+msgid "Thanks for using Basketball Scorebook!"
+msgstr ""
+
+#: basketball-scorebook.php:390
+msgid "If you find it helpful, a review would really support ongoing development."
+msgstr ""
+
+#: basketball-scorebook.php:422
+msgid "Leave a Review"
+msgstr ""
+
+#: basketball-scorebook.php:425
+msgid "View Help"
+msgstr ""
+
+#: basketball-scorebook.php:428
+msgid "Not Now"
+msgstr ""
+
+#: basketball-scorebook.php:434
 msgid "Height Customization"
 msgstr ""
 
-#: basketball-scorebook.php:153
+#: basketball-scorebook.php:436
 msgid "To customize the iframe height, specify the "
 msgstr ""
 
-#: basketball-scorebook.php:155
+#: basketball-scorebook.php:438
 msgid "attribute. The default is "
 msgstr ""
 
-#: basketball-scorebook.php:157
+#: basketball-scorebook.php:440
 msgid "(85% of viewport height)."
 msgstr ""
 
-#: basketball-scorebook.php:166
+#: basketball-scorebook.php:449
 msgid "Usage Examples:"
 msgstr ""
 
-#: basketball-scorebook.php:167
+#: basketball-scorebook.php:450
 msgid "Full screen height"
 msgstr ""
 
-#: basketball-scorebook.php:168
+#: basketball-scorebook.php:451
 msgid "Fixed 600 pixels"
 msgstr ""
 
-#: basketball-scorebook.php:169
+#: basketball-scorebook.php:452
 msgid "90% of screen height"
 msgstr ""
 
-#: basketball-scorebook.php:172
+#: basketball-scorebook.php:455
 msgid "Usage & Demo Site"
 msgstr ""
 
-#: basketball-scorebook.php:173
-msgid ""
-"For detailed usage instructions, examples, and the latest information, "
-"please visit the developer's website. It also serves as a full-featured demo "
-"of this plugin."
+#: basketball-scorebook.php:456
+msgid "For detailed usage instructions, examples, and the latest information, please visit the developer's website. It also serves as a full-featured demo of this plugin."
 msgstr ""
 
-#: basketball-scorebook.php:177
+#: basketball-scorebook.php:460
 msgid "【Official】Basketball Scorebook Usage Guide & Demo Site"
 msgstr ""
 
-#: basketball-scorebook.php:181
+#: basketball-scorebook.php:464
 msgid "Support Notice"
 msgstr ""
 
-#: basketball-scorebook.php:183
+#: basketball-scorebook.php:466
 msgid "This plugin is provided under the GPL license, but "
 msgstr ""
 
-#: basketball-scorebook.php:184
-msgid ""
-"if you remove or modify the developer links or copyright notices in the "
-"code, that version will be considered unofficial and will not be eligible "
-"for support or bug fixes"
+#: basketball-scorebook.php:467
+msgid "if you remove or modify the developer links or copyright notices in the code, that version will be considered unofficial and will not be eligible for support or bug fixes"
 msgstr ""
 
-#: basketball-scorebook.php:185
+#: basketball-scorebook.php:468
 msgid ". Thank you for your understanding."
 msgstr ""
