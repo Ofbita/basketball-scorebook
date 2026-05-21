@@ -2,9 +2,9 @@
 Tags: basketball, scorebook, sports, timer, pdf
 Contributors: ofbita
 Requires at least: 5.5
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.2
-Stable Tag: 1.0.6
+Stable Tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,10 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 
 == Changelog ==
 
+= 1.0.7 =
+
+* Updated: Tested up to WordPress 7.0.
+
 = 1.0.6 =
 
 * Added: Suggested privacy policy text via `wp_add_privacy_policy_content()` so site owners can clearly describe LocalStorage usage and optional anonymous telemetry.
@@ -134,6 +138,10 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+
+Compatibility update: tested with WordPress 7.0. No functional changes.
 
 = 1.0.6 =
 

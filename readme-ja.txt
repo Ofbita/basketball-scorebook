@@ -2,9 +2,9 @@
 Contributors: ofbita
 Tags: basketball, scorebook, sports, timer, pdf
 Requires at least: 5.5
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.2
-Stable Tag: 1.0.6
+Stable Tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == 変更履歴 ==
 
+= 1.0.7 =
+
+* 更新: WordPress 7.0 までの動作確認を実施
+
 = 1.0.6 =
 
 * 追加: WordPress の「プライバシーポリシー」画面に、Basketball Scorebook が扱うデータ（ブラウザの LocalStorage 保存・オプトイン式の匿名利用統計）の説明文を自動追加する機能を実装
@@ -134,6 +138,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 * 初回リリース
 
 == アップグレード通知 ==
+
+= 1.0.7 =
+
+互換性の更新: WordPress 7.0 での動作確認済み。機能変更はありません。
 
 = 1.0.6 =
 
