@@ -4,7 +4,7 @@ Tags: basketball, scorebook, sports, timer, pdf
 Requires at least: 5.5
 Tested up to: 7.0
 Requires PHP: 7.2
-Stable Tag: 1.0.7
+Stable Tag: 1.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,12 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == 変更履歴 ==
 
+= 1.0.8 =
+
+* 修正: 保存処理の際に、最新の試合イベントログやアノテーションが古いストレージデータで上書きされて戻ってしまう（先祖返りする）重大な不具合を修正
+* 改善: 将来の v1.1.0（スマホ有料アプリ版等）との同期および移行に備え、保存データ構造を拡張（試合時間設定 `meta.quarterLength`/`overtimeLength` および選手配置の座標 `liveState.homeCourtPositions`/`awayCourtPositions` を裏側で保持するように対応）
+* 改善: イベントログや liveState 読み込み時のデータ検証およびマッピングを厳格化し、データ整合性を強化
+
 = 1.0.7 =
 
 * 更新: WordPress 7.0 までの動作確認を実施
@@ -138,6 +144,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 * 初回リリース
 
 == アップグレード通知 ==
+
+= 1.0.8 =
+
+保存処理時の潜在的なデータ先祖返りバグを修正し、データの信頼性を向上させました。将来的に v1.1.0 やスマホアプリ等とのデータ移行・同期を予定している場合は、アップデートを強く推奨します。
 
 = 1.0.7 =
 

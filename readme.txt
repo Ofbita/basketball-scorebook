@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 7.0
 Requires PHP: 7.2
-Stable Tag: 1.0.7
+Stable Tag: 1.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,12 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 
 == Changelog ==
 
+= 1.0.8 =
+
+* Fixed: Resolved a critical data reversion bug where newly updated event logs or annotations could be overwritten by older localStorage data.
+* Improved: Extended the saved data schema (adds game parameters `meta.quarterLength`/`overtimeLength` and D&D court positions `liveState.homeCourtPositions`/`awayCourtPositions` behind the scenes) to prepare for future v1.1.0 and mobile app synchronization.
+* Improved: Enhanced mapping logic for event logs and liveState to ensure better data integrity when loading and importing game files.
+
 = 1.0.7 =
 
 * Updated: Tested up to WordPress 7.0.
@@ -138,6 +144,10 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.8 =
+
+Fixes a potential data reversion issue during save operations and ensures robust data integrity. Highly recommended for users planning to migrate or sync data with future v1.1.0/mobile applications.
 
 = 1.0.7 =
 
