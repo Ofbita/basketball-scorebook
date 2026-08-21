@@ -2,9 +2,9 @@
 Tags: basketball, scorebook, sports, timer, pdf
 Contributors: ofbita
 Requires at least: 5.5
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.2
-Stable Tag: 1.0.8
+Stable Tag: 1.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,23 +50,19 @@ For the best experience, we recommend using a "Full-Width" page template to maxi
 
 == Frequently Asked Questions ==
 
-= Does this plugin work without an internet connection? =
+= How is data saved? =
 
-Yes, once the page is loaded. All calculations are done in the browser using JavaScript (Alpine.js).
+Data is automatically saved to your browser's LocalStorage every 3 seconds. It does not save to your WordPress database.
 
-= Can my data be lost? =
+= Can I backup my scorebook data? =
 
-Your data won't be lost during normal use. However, if you clear your browser's browsing history (cache), LocalStorage data will also be deleted. As the safest approach, we recommend exporting to JSON at halftime or after the game ends.
+Yes, you can export your game data as a JSON file and import it anytime. We recommend doing this for important games.
 
-= Can I save the scorebook as PDF? =
+= Can I print or export to PDF? =
 
-Yes. Select "Print/PDF". The layout is optimized for A4 landscape.
+Yes! Click the "Print" button or press Ctrl+P (Cmd+P on Mac) to print or save as PDF. The layout is optimized for A4 Landscape.
 
-= Is my data saved automatically? =
-
-Yes. The scorebook auto-saves to your browser's LocalStorage every time you make a change.
-
-= Does this plugin send any data outside my site? =
+= Does this plugin collect telemetry or analytics? =
 
 By default, **No**. The plugin does not send any analytics/telemetry unless you explicitly opt in from the settings page.
 If you opt in, the plugin sends **anonymous event counts only** (plugin version, WordPress/PHP version, locale, and event name). It does not send your site URL, email address, or any scorebook contents.
@@ -80,10 +76,15 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 
 == Changelog ==
 
+= 1.0.9 =
+
+* Updated: Tested up to WordPress 7.1.
+* Improved: Synchronized schema and adapter layers to support game parameter sharing (roster/coach cancellation states: `rosterCancelled`, `coachCancelled`, `assistantCoachCancelled`) for seamless data compatibility with Mini Basketball edition.
+
 = 1.0.8 =
 
 * Fixed: Resolved a critical data reversion bug where newly updated event logs or annotations could be overwritten by older localStorage data.
-* Improved: Extended the saved data schema (adds game parameters `meta.quarterLength`/`overtimeLength` and D&D court positions `liveState.homeCourtPositions`/`awayCourtPositions` behind the scenes) to prepare for future v1.1.0 and mobile app synchronization.
+* Improved: Extended the saved data schema (adds game parameters `meta.quarterLength`/`overtimeLength` and D&D court positions `liveState.homeCourtPositions`/`awayCourtPositions` behind the scenes) to prepare for future Mini Basketball edition synchronization.
 * Improved: Enhanced mapping logic for event logs and liveState to ensure better data integrity when loading and importing game files.
 
 = 1.0.7 =
@@ -121,7 +122,7 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 
 = 1.0.3 =
 
-* Updated: Prepare v1.1.0 migration by extending saved data schema (adds `meta` and `foulEvents` to save/export/import while keeping LocalStorage key)
+* Updated: Prepare Mini Basketball edition migration by extending saved data schema (adds `meta` and `foulEvents` to save/export/import while keeping LocalStorage key)
 * Updated: Add schema versioning (`meta.schemaVersion = 103`) and default-fill logic for backward compatibility
 
 = 1.0.2 =
@@ -145,9 +146,13 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 
 == Upgrade Notice ==
 
+= 1.0.9 =
+
+Adds support for WordPress 7.1 and improves data compatibility with upcoming Mini Basketball edition by synchronizing parameter schemas.
+
 = 1.0.8 =
 
-Fixes a potential data reversion issue during save operations and ensures robust data integrity. Highly recommended for users planning to migrate or sync data with future v1.1.0/mobile applications.
+Fixes a potential data reversion issue during save operations and ensures robust data integrity. Highly recommended for users planning to migrate or sync data with future Mini Basketball edition.
 
 = 1.0.7 =
 

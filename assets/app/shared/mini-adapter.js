@@ -42,6 +42,7 @@
     out.number = src.number || '';
     out.name = src.name || '';
     out.licenseNo = src.licenseNo || '';
+    out.rosterCancelled = !!src.rosterCancelled;
     out.participation.q1 = normalizeParticipation(src.participation && src.participation.q1);
     out.participation.q2 = normalizeParticipation(src.participation && src.participation.q2);
     out.participation.q3 = normalizeParticipation(src.participation && src.participation.q3);
@@ -65,6 +66,7 @@
     out.number = src.number || '';
     out.name = src.name || '';
     out.licenseNo = src.licenseNo || '';
+    out.rosterCancelled = !!src.rosterCancelled;
     out.participation.q1 = normalizeParticipation(src.participation && src.participation.q1);
     out.participation.q2 = normalizeParticipation(src.participation && src.participation.q2);
     out.participation.q3 = normalizeParticipation(src.participation && src.participation.q3);
@@ -164,6 +166,8 @@
       normalized.assistantCoach = team.assistantCoach || '';
       normalized.coachLicenseNo = team.coachLicenseNo || '';
       normalized.assistantCoachLicenseNo = team.assistantCoachLicenseNo || '';
+      normalized.coachCancelled = !!team.coachCancelled;
+      normalized.assistantCoachCancelled = !!team.assistantCoachCancelled;
       normalized.players = ensureArray(team.players).slice(0, 15).map(function (player, idx) {
         return mapMiniPlayerToCommon(player, idx, teamKey);
       });
@@ -239,6 +243,8 @@
       out.teams[teamKey].assistantCoach = team.assistantCoach || '';
       out.teams[teamKey].coachLicenseNo = team.coachLicenseNo || '';
       out.teams[teamKey].assistantCoachLicenseNo = team.assistantCoachLicenseNo || '';
+      out.teams[teamKey].coachCancelled = !!team.coachCancelled;
+      out.teams[teamKey].assistantCoachCancelled = !!team.assistantCoachCancelled;
       out.teams[teamKey].players = ensureArray(team.players).slice(0, 15).map(function (player, idx) {
         return mapMiniPlayerToCommon(player, idx, teamKey);
       });
@@ -305,6 +311,8 @@
           assistantCoach: src.teams.home.assistantCoach || '',
           coachLicenseNo: src.teams.home.coachLicenseNo || '',
           assistantCoachLicenseNo: src.teams.home.assistantCoachLicenseNo || '',
+          coachCancelled: !!src.teams.home.coachCancelled,
+          assistantCoachCancelled: !!src.teams.home.assistantCoachCancelled,
           players: ensureArray(src.teams.home.players).slice(0, 15).map(function (player, idx) {
             return mapCommonPlayerToMini(player, idx, 'home');
           }),
@@ -320,6 +328,8 @@
           assistantCoach: src.teams.away.assistantCoach || '',
           coachLicenseNo: src.teams.away.coachLicenseNo || '',
           assistantCoachLicenseNo: src.teams.away.assistantCoachLicenseNo || '',
+          coachCancelled: !!src.teams.away.coachCancelled,
+          assistantCoachCancelled: !!src.teams.away.assistantCoachCancelled,
           players: ensureArray(src.teams.away.players).slice(0, 15).map(function (player, idx) {
             return mapCommonPlayerToMini(player, idx, 'away');
           }),

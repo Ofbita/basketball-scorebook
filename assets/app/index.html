@@ -1353,6 +1353,8 @@
                                 if (this.teams[team].assistantCoach == null) this.teams[team].assistantCoach = '';
                                 if (this.teams[team].coachLicenseNo == null) this.teams[team].coachLicenseNo = '';
                                 if (this.teams[team].assistantCoachLicenseNo == null) this.teams[team].assistantCoachLicenseNo = '';
+                                if (this.teams[team].coachCancelled == null) this.teams[team].coachCancelled = false;
+                                if (this.teams[team].assistantCoachCancelled == null) this.teams[team].assistantCoachCancelled = false;
                                 if (this.teams[team].teamState) {
                                     if (!this.teams[team].coach && this.teams[team].teamState.coach) {
                                         this.teams[team].coach = this.teams[team].teamState.coach;
@@ -1368,6 +1370,7 @@
                                     this.migratePlayerFouls(this.teams[team].players);
                                     this.teams[team].players.forEach(p => {
                                         if (p && p.licenseNo == null) p.licenseNo = '';
+                                        if (p && p.rosterCancelled == null) p.rosterCancelled = false;
                                     });
                                 }
                                 if (!this.teams[team].runningScore) {

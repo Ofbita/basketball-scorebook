@@ -74,6 +74,7 @@
       number: '',
       name: '',
       licenseNo: '',
+      rosterCancelled: false,
       participation: createParticipation(),
       fouls: Array.from({ length: 5 }, function () {
         return createFoulSlot();
@@ -81,7 +82,7 @@
       quarterStats: createQuarterStats()
     };
   }
- 
+
   /** ミニバス用: 各 period 1 スロットの TO（active / rawClock / mark）。 */
   function createMiniTimeoutSlot(base) {
     const src = base || {};
@@ -91,7 +92,7 @@
       mark: src.mark || ''
     };
   }
- 
+
   /** 全 period の TO スロット配列の初期形（各 Q 長さ1配列）。 */
   function createTimeouts() {
     return {
@@ -103,7 +104,7 @@
       ot2: [createMiniTimeoutSlot()]
     };
   }
- 
+
   /** home/away 共通のチームブロック初期形（選手15名・runningScore は空オブジェクト起点）。 */
   function createTeam() {
     return {
@@ -112,7 +113,9 @@
       assistantCoach: '',
       coachLicenseNo: '',
       assistantCoachLicenseNo: '',
-      players: Array.from({ length: 15 }, function (_, idx) {
+      coachCancelled: false,
+      assistantCoachCancelled: false,
+      players: Array.from({ length: 18 }, function (_, idx) {
         return createPlayer('player-' + idx);
       }),
       teamState: {

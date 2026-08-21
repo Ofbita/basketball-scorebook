@@ -187,6 +187,7 @@
     out.number = src.number || '';
     out.name = src.name || '';
     out.licenseNo = src.licenseNo || '';
+    out.rosterCancelled = !!src.rosterCancelled;
     out.participation.q1 = normalizeParticipation(src.participation && src.participation.q1);
     out.participation.q2 = normalizeParticipation(src.participation && src.participation.q2);
     out.participation.q3 = normalizeParticipation(src.participation && src.participation.q3);
@@ -220,6 +221,7 @@
       number: src.number || '',
       name: src.name || '',
       licenseNo: src.licenseNo || '',
+      rosterCancelled: !!src.rosterCancelled,
       participation: {
         q1: normalizeParticipation(src.participation && src.participation.q1),
         q2: normalizeParticipation(src.participation && src.participation.q2),
@@ -266,6 +268,8 @@
     out.assistantCoach = src.assistantCoach || '';
     out.coachLicenseNo = src.coachLicenseNo || '';
     out.assistantCoachLicenseNo = src.assistantCoachLicenseNo || '';
+    out.coachCancelled = !!src.coachCancelled;
+    out.assistantCoachCancelled = !!src.assistantCoachCancelled;
     out.players = ensureArray(src.players).slice(0, 15).map(function (player, idx) {
       return mapLegacyPlayerToCommon(player, idx, teamKey);
     });
@@ -286,6 +290,8 @@
       assistantCoach: src.assistantCoach || '',
       coachLicenseNo: src.coachLicenseNo || '',
       assistantCoachLicenseNo: src.assistantCoachLicenseNo || '',
+      coachCancelled: !!src.coachCancelled,
+      assistantCoachCancelled: !!src.assistantCoachCancelled,
       players: ensureArray(src.players).slice(0, 15).map(function (player, idx) {
         return mapCommonPlayerToClassic(player, idx, teamKey);
       }),
@@ -347,6 +353,8 @@
       normalized.assistantCoach = team.assistantCoach || '';
       normalized.coachLicenseNo = team.coachLicenseNo || '';
       normalized.assistantCoachLicenseNo = team.assistantCoachLicenseNo || '';
+      normalized.coachCancelled = !!team.coachCancelled;
+      normalized.assistantCoachCancelled = !!team.assistantCoachCancelled;
       normalized.players = ensureArray(team.players).slice(0, 15).map(function (player, idx) {
         return mapLegacyPlayerToCommon(player, idx, teamKey);
       });

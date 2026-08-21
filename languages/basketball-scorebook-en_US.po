@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Basketball Scorebook 1.0.8\n"
+"Project-Id-Version: Basketball Scorebook 1.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/basketball-scorebook\n"
 "POT-Creation-Date: 2026-05-04T08:29:44+00:00\n"
 "PO-Revision-Date: 2026-06-28 19:30+0900\n"
