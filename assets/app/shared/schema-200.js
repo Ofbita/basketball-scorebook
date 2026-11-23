@@ -85,6 +85,9 @@
 
   /** ミニバス用: 各 period 1 スロットの TO（active / rawClock / mark）。 */
   function createMiniTimeoutSlot(base) {
+    if (typeof base === 'boolean') {
+      return { active: base, rawClock: '', mark: '' };
+    }
     const src = base || {};
     return {
       active: !!src.active,

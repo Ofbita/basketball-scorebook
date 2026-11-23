@@ -113,6 +113,9 @@
         .bsb-btn--reset .bsb-btn-icon {
             background: linear-gradient(135deg, #dc2626, #f97316);
         }
+        .bsb-btn--next-game .bsb-btn-icon {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+        }
         .bsb-btn--print .bsb-btn-icon {
             background: linear-gradient(135deg, #000000, #4b5563);
         }
@@ -303,6 +306,15 @@
                         >
                             <span class="bsb-btn-icon">↺</span>
                             <span class="bsb-btn-label">リセット</span>
+                        </button>
+
+                        <button 
+                            @click="resetForNextGame()"
+                            class="bsb-btn bsb-btn--next-game"
+                            title="チーム名・選手名・背番号を残して、スコア・ファウル・時刻のみリセットする"
+                        >
+                            <span class="bsb-btn-icon">⏭️</span>
+                            <span class="bsb-btn-label">次試合へ(メンバー維持)</span>
                         </button>
 
                         <button 
@@ -638,7 +650,7 @@
 
                                 <!-- Number -->
                                 <td class="border border-gray-400 p-0">
-                                    <input class="w-full h-full text-center bg-transparent outline-none" x-model="player.number" placeholder="#">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full h-full text-center bg-transparent outline-none" x-model="player.number" placeholder="#">
                                 </td>
 
                                 <!-- Name -->
@@ -648,30 +660,30 @@
 
                                 <!-- Stats by Quarter -->
                                 <!-- Q1 -->
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.pt2"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.pt3"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.ft"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.fta"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.pt2" @input="onQuarterStatInput($event, player, 'q1', 'pt2')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.pt3" @input="onQuarterStatInput($event, player, 'q1', 'pt3')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.ft" @input="onQuarterStatInput($event, player, 'q1', 'ft')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q1.fta" @input="onQuarterStatInput($event, player, 'q1', 'fta')"></td>
                                 <!-- Q2 -->
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.pt2"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.pt3"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.ft"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.fta"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.pt2" @input="onQuarterStatInput($event, player, 'q2', 'pt2')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.pt3" @input="onQuarterStatInput($event, player, 'q2', 'pt3')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.ft" @input="onQuarterStatInput($event, player, 'q2', 'ft')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q2.fta" @input="onQuarterStatInput($event, player, 'q2', 'fta')"></td>
                                 <!-- Q3 -->
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.pt2"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.pt3"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.ft"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.fta"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.pt2" @input="onQuarterStatInput($event, player, 'q3', 'pt2')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.pt3" @input="onQuarterStatInput($event, player, 'q3', 'pt3')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.ft" @input="onQuarterStatInput($event, player, 'q3', 'ft')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q3.fta" @input="onQuarterStatInput($event, player, 'q3', 'fta')"></td>
                                 <!-- Q4 -->
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.pt2"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.pt3"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.ft"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.fta"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.pt2" @input="onQuarterStatInput($event, player, 'q4', 'pt2')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.pt3" @input="onQuarterStatInput($event, player, 'q4', 'pt3')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.ft" @input="onQuarterStatInput($event, player, 'q4', 'ft')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.q4.fta" @input="onQuarterStatInput($event, player, 'q4', 'fta')"></td>
                                 <!-- OT -->
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.pt2"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.pt3"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.ft"></td>
-                                <td class="border border-gray-400 p-0"><input class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.fta"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.pt2" @input="onQuarterStatInput($event, player, 'ot', 'pt2')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.pt3" @input="onQuarterStatInput($event, player, 'ot', 'pt3')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.ft" @input="onQuarterStatInput($event, player, 'ot', 'ft')"></td>
+                                <td class="border border-gray-400 p-0"><input type="text" inputmode="numeric" pattern="[0-9]*" class="w-full text-center outline-none bg-transparent text-xs placeholder:text-gray-300 placeholder:text-[8px]" x-model="player.quarterStats.ot.fta" @input="onQuarterStatInput($event, player, 'ot', 'fta')"></td>
 
                                 <!-- Total Points (Auto-calculated) -->
                                 <td class="border border-gray-400 p-0 bg-gray-50">
@@ -683,7 +695,11 @@
                         <!-- Total Row -->
                         <tr class="bg-gray-300 print-bg-gray font-bold border-t-2 border-gray-600">
                             <td colspan="4" class="border border-gray-500 p-1 text-right pr-4">合計：</td>
-                            <td colspan="20" class="border border-gray-500 bg-gray-200 print-bg-gray"></td>
+                            <td colspan="4" class="border border-gray-500 bg-gray-200 print-bg-gray text-center text-[10px] font-bold text-gray-800 px-0.5 whitespace-nowrap" x-text="getQuarterSummaryText('q1')"></td>
+                            <td colspan="4" class="border border-gray-500 bg-gray-200 print-bg-gray text-center text-[10px] font-bold text-gray-800 px-0.5 whitespace-nowrap" x-text="getQuarterSummaryText('q2')"></td>
+                            <td colspan="4" class="border border-gray-500 bg-gray-200 print-bg-gray text-center text-[10px] font-bold text-gray-800 px-0.5 whitespace-nowrap" x-text="getQuarterSummaryText('q3')"></td>
+                            <td colspan="4" class="border border-gray-500 bg-gray-200 print-bg-gray text-center text-[10px] font-bold text-gray-800 px-0.5 whitespace-nowrap" x-text="getQuarterSummaryText('q4')"></td>
+                            <td colspan="4" class="border border-gray-500 bg-gray-200 print-bg-gray text-center text-[10px] font-bold text-gray-800 px-0.5 whitespace-nowrap" x-text="getQuarterSummaryText('ot')"></td>
                             <td class="border border-gray-500 text-center text-sm font-bold" x-text="getTotalPoints()"></td>
                         </tr>
                     </tbody>
@@ -1223,6 +1239,92 @@
                     });
                     return total || '';
                 },
+
+                hasAnyQuarterStatInput(teamKey, q) {
+                    const team = this.teams[teamKey];
+                    if (!team || !Array.isArray(team.players)) return false;
+                    return team.players.some(p => {
+                        const st = p && p.quarterStats && p.quarterStats[q];
+                        if (!st) return false;
+                        return [st.pt2, st.pt3, st.ft, st.fta].some(v => v !== '' && v != null);
+                    });
+                },
+
+                calcQuarterPointsForTeam(teamKey, q) {
+                    const team = this.teams[teamKey];
+                    if (!team || !Array.isArray(team.players)) return 0;
+                    let total = 0;
+                    team.players.forEach(p => {
+                        const st = p && p.quarterStats && p.quarterStats[q];
+                        if (!st) return;
+                        total += (parseInt(st.pt2, 10) || 0) * 2;
+                        total += (parseInt(st.pt3, 10) || 0) * 3;
+                        total += (parseInt(st.ft, 10) || 0) * 1;
+                    });
+                    return total;
+                },
+
+                hasAnyQuarterScoreStatInput(teamKey, q) {
+                    const team = this.teams[teamKey];
+                    if (!team || !Array.isArray(team.players)) return false;
+                    return team.players.some(p => {
+                        const st = p && p.quarterStats && p.quarterStats[q];
+                        if (!st) return false;
+                        return [st.pt2, st.pt3, st.ft].some(v => v !== '' && v != null);
+                    });
+                },
+
+                syncQuarterScoreFromStats(q, teamKey = this.activeTeam) {
+                    const targetScore = teamKey === 'home' ? this.myScore : this.opScore;
+                    if (!targetScore) return;
+                    const hasInput = this.hasAnyQuarterScoreStatInput(teamKey, q);
+                    const pts = this.calcQuarterPointsForTeam(teamKey, q);
+                    if (q === 'ot') {
+                        const ot2Val = parseInt(targetScore.ot2, 10) || 0;
+                        if (!hasInput && ot2Val === 0) {
+                            targetScore.ot1 = '';
+                        } else {
+                            targetScore.ot1 = String(Math.max(0, pts - ot2Val));
+                        }
+                    } else {
+                        targetScore[q] = hasInput ? String(pts) : '';
+                    }
+                },
+
+                onQuarterStatInput(event, player, q, field) {
+                    const raw = event && event.target ? event.target.value : '';
+                    const cleaned = String(raw).replace(/[^0-9]/g, '');
+                    if (event && event.target && event.target.value !== cleaned) {
+                        event.target.value = cleaned;
+                    }
+                    if (player && player.quarterStats && player.quarterStats[q]) {
+                        player.quarterStats[q][field] = cleaned;
+                    }
+                    if (field === 'pt2' || field === 'pt3' || field === 'ft') {
+                        this.syncQuarterScoreFromStats(q, this.activeTeam);
+                    }
+                },
+
+                getQuarterSummaryText(q) {
+                    const teamKey = this.activeTeam;
+                    const team = this.teams[teamKey];
+                    if (!team || !Array.isArray(team.players)) return '';
+                    const hasInput = this.hasAnyQuarterStatInput(teamKey, q);
+                    const pts = this.calcQuarterPointsForTeam(teamKey, q);
+                    let ft = 0;
+                    let fta = 0;
+                    team.players.forEach(p => {
+                        const st = p && p.quarterStats && p.quarterStats[q];
+                        if (!st) return;
+                        ft += parseInt(st.ft, 10) || 0;
+                        fta += parseInt(st.fta, 10) || 0;
+                    });
+                    if (!hasInput && pts === 0 && ft === 0 && fta === 0) return '';
+                    if (ft > 0 || fta > 0) {
+                        return `${pts}点 (FT ${ft}/${fta})`;
+                    }
+                    return `${pts}点`;
+                },
             
                 // ランニングスコアの <select> を runningScore の値で同期する共通ヘルパー
                 syncRunningScoreSelects(teamKey = this.activeTeam) {
@@ -1455,6 +1557,65 @@
                     }
                 },
 
+                resetForNextGame() {
+                    if (confirm('チーム名・選手名・背番号を残して、得点・ファウル・タイムアウト・時刻をリセットしますか？\n（次の試合を開始する際に便利です）')) {
+                        this.myScore = { q1: '', q2: '', q3: '', q4: '', ot1: '', ot2: '' };
+                        this.opScore = { q1: '', q2: '', q3: '', q4: '', ot1: '', ot2: '' };
+                        this.quarterTimes = {
+                            q1: { start: '', end: '' },
+                            q2: { start: '', end: '' },
+                            q3: { start: '', end: '' },
+                            q4: { start: '', end: '' },
+                            ot1: { start: '', end: '' },
+                            ot2: { start: '', end: '' }
+                        };
+                        this.foulEvents = [];
+                        if (this.meta && typeof this.meta === 'object') {
+                            this.meta.time = '';
+                            this.meta.gameEndTime = '';
+                            this.meta.winnerTeam = '';
+                        }
+
+                        ['home', 'away'].forEach(teamKey => {
+                            const team = this.teams[teamKey];
+                            if (!team) return;
+                            team.teamState = createTeamState();
+                            team.runningScore = createRunningScore();
+                            if (Array.isArray(team.players)) {
+                                team.players.forEach(p => {
+                                    if (!p) return;
+                                    p.fouls = [
+                                        { active: false, time: '' },
+                                        { active: false, time: '' },
+                                        { active: false, time: '' },
+                                        { active: false, time: '' },
+                                        { active: false, time: '' }
+                                    ];
+                                    p.participation = { q1: false, q2: false, q3: false, q4: false };
+                                    p.quarterStats = {
+                                        q1: { pt2: '', pt3: '', ft: '', fta: '' },
+                                        q2: { pt2: '', pt3: '', ft: '', fta: '' },
+                                        q3: { pt2: '', pt3: '', ft: '', fta: '' },
+                                        q4: { pt2: '', pt3: '', ft: '', fta: '' },
+                                        ot: { pt2: '', pt3: '', ft: '', fta: '' }
+                                    };
+                                });
+                            }
+                        });
+
+                        _store.clear();
+                        this.saveData();
+                        this.refreshKey++;
+                        this.syncRunningScoreSelects(this.activeTeam);
+
+                        try {
+                            if (window.BASKSC_TELEMETRY && typeof window.BASKSC_TELEMETRY.track === 'function') {
+                                window.BASKSC_TELEMETRY.track('reset_keep_roster');
+                            }
+                        } catch (e) {}
+                    }
+                },
+
                 // --- JSON Export / Import 機能 ---
 
                 // 現在の状態をJSONファイルとしてダウンロード（バックアップ/テンプレート用）
@@ -1501,6 +1662,9 @@
                             }
 
                             const data = JSON.parse(text);
+                            if (!confirm('現在の入力データを上書きしてJSONファイルを読み込みますか？')) {
+                                return;
+                            }
                             const viewModel = _store.importJSON(data);
                             this.applyClassicViewModel(viewModel);
 

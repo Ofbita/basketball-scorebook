@@ -55,6 +55,16 @@
       });
       while (out.fouls.length < 5) out.fouls.push(S.createFoulSlot());
     }
+
+    if (src.quarterStats && typeof src.quarterStats === 'object') {
+      out.quarterStats = {
+        q1: Object.assign(S.createQuarterStats().q1, ensureObject(src.quarterStats.q1)),
+        q2: Object.assign(S.createQuarterStats().q2, ensureObject(src.quarterStats.q2)),
+        q3: Object.assign(S.createQuarterStats().q3, ensureObject(src.quarterStats.q3)),
+        q4: Object.assign(S.createQuarterStats().q4, ensureObject(src.quarterStats.q4)),
+        ot: Object.assign(S.createQuarterStats().ot, ensureObject(src.quarterStats.ot))
+      };
+    }
  
     return out;
   }
@@ -75,6 +85,15 @@
       return S.createFoulSlot(slot);
     });
     while (out.fouls.length < 5) out.fouls.push(S.createFoulSlot());
+    if (src.quarterStats && typeof src.quarterStats === 'object') {
+      out.quarterStats = {
+        q1: Object.assign(S.createQuarterStats().q1, ensureObject(src.quarterStats.q1)),
+        q2: Object.assign(S.createQuarterStats().q2, ensureObject(src.quarterStats.q2)),
+        q3: Object.assign(S.createQuarterStats().q3, ensureObject(src.quarterStats.q3)),
+        q4: Object.assign(S.createQuarterStats().q4, ensureObject(src.quarterStats.q4)),
+        ot: Object.assign(S.createQuarterStats().ot, ensureObject(src.quarterStats.ot))
+      };
+    }
     return out;
   }
  
@@ -93,12 +112,14 @@
     return out;
   }
  
-  /** `liveState` の配列フィールドを文字列 ID の配列として正規化。 */
+  /** `liveState` の配列フィールドおよびコート座標を正規化。 */
   function ensureLiveState(raw) {
     const src = raw && typeof raw === 'object' ? raw : {};
     return {
       homeOnCourtIds: ensureArray(src.homeOnCourtIds).map(String),
-      awayOnCourtIds: ensureArray(src.awayOnCourtIds).map(String)
+      awayOnCourtIds: ensureArray(src.awayOnCourtIds).map(String),
+      homeCourtPositions: src.homeCourtPositions && typeof src.homeCourtPositions === 'object' ? S.clone(src.homeCourtPositions) : {},
+      awayCourtPositions: src.awayCourtPositions && typeof src.awayCourtPositions === 'object' ? S.clone(src.awayCourtPositions) : {}
     };
   }
  
@@ -168,7 +189,9 @@
       normalized.assistantCoachLicenseNo = team.assistantCoachLicenseNo || '';
       normalized.coachCancelled = !!team.coachCancelled;
       normalized.assistantCoachCancelled = !!team.assistantCoachCancelled;
-      normalized.players = ensureArray(team.players).slice(0, 15).map(function (player, idx) {
+      const rawPlayers = ensureArray(team.players);
+      const maxSlots = Math.max(15, Math.min(18, rawPlayers.length));
+      normalized.players = rawPlayers.slice(0, maxSlots).map(function (player, idx) {
         return mapMiniPlayerToCommon(player, idx, teamKey);
       });
       while (normalized.players.length < 15) {
@@ -178,7 +201,15 @@
       normalized.teamState.teamFouls = Object.assign({ q1: 0, q2: 0, q3: 0, q4: 0 }, ensureObject(team.teamState && team.teamState.teamFouls));
       normalized.teamState.timeouts = ensureObject(team.teamState && team.teamState.timeouts);
       S.ALL_PERIODS.forEach(function (period) {
-        normalized.teamState.timeouts[period] = [S.createMiniTimeoutSlot(ensureArray(normalized.teamState.timeouts[period])[0])];
+        const periodSlots = ensureArray(normalized.teamState.timeouts[period]);
+        if (period === 'q4' && periodSlots.length > 1) {
+          normalized.teamState.timeouts[period] = [
+            S.createMiniTimeoutSlot(periodSlots[0]),
+            S.createMiniTimeoutSlot(periodSlots[1])
+          ];
+        } else {
+          normalized.teamState.timeouts[period] = [S.createMiniTimeoutSlot(periodSlots[0])];
+        }
       });
       normalized.runningScore = ensureRunningScore(team.runningScore);
       out.teams[teamKey] = normalized;
@@ -245,7 +276,9 @@
       out.teams[teamKey].assistantCoachLicenseNo = team.assistantCoachLicenseNo || '';
       out.teams[teamKey].coachCancelled = !!team.coachCancelled;
       out.teams[teamKey].assistantCoachCancelled = !!team.assistantCoachCancelled;
-      out.teams[teamKey].players = ensureArray(team.players).slice(0, 15).map(function (player, idx) {
+      const rawPlayers = ensureArray(team.players);
+      const maxSlots = Math.max(15, Math.min(18, rawPlayers.length));
+      out.teams[teamKey].players = rawPlayers.slice(0, maxSlots).map(function (player, idx) {
         return mapMiniPlayerToCommon(player, idx, teamKey);
       });
       while (out.teams[teamKey].players.length < 15) {
@@ -255,7 +288,15 @@
       out.teams[teamKey].teamState.teamFouls = Object.assign({ q1: 0, q2: 0, q3: 0, q4: 0 }, ensureObject(team.teamState && team.teamState.teamFouls));
       out.teams[teamKey].teamState.timeouts = ensureObject(team.teamState && team.teamState.timeouts);
       S.ALL_PERIODS.forEach(function (period) {
-        out.teams[teamKey].teamState.timeouts[period] = [S.createMiniTimeoutSlot(ensureArray(out.teams[teamKey].teamState.timeouts[period])[0])];
+        const periodSlots = ensureArray(out.teams[teamKey].teamState.timeouts[period]);
+        if (period === 'q4' && periodSlots.length > 1) {
+          out.teams[teamKey].teamState.timeouts[period] = [
+            S.createMiniTimeoutSlot(periodSlots[0]),
+            S.createMiniTimeoutSlot(periodSlots[1])
+          ];
+        } else {
+          out.teams[teamKey].teamState.timeouts[period] = [S.createMiniTimeoutSlot(periodSlots[0])];
+        }
       });
       out.teams[teamKey].runningScore = ensureRunningScore(team.runningScore);
     });

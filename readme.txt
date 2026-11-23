@@ -4,7 +4,7 @@ Contributors: ofbita
 Requires at least: 5.5
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable Tag: 1.0.9
+Stable Tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,18 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 
 == Changelog ==
 
+= 1.1.0 =
+
+* Added: Real-time automatic synchronization from player quarter stats (2P, 3P, FT) to the top "Score by Quarter" scoreboard (while keeping direct manual score input available).
+* Added: Per-quarter points and free-throw (FT/FTA) summary breakdown in the bottom Total row of the player table.
+* Added: "Next Game" (Keep Roster) reset button to clear only scores, fouls, timeouts, and timestamps while preserving team names, player names, jersey numbers, and coach info for multi-game tournament days.
+* Improved: Added `inputmode="numeric"` to jersey number and all quarter stat inputs for smoother numeric keypad entry on iPad and tablets.
+* Improved: Added a confirmation dialog before overwriting current match data on JSON import.
+* Fixed: Resolved a bug where the 3rd second-half timeout (`secondHalf[2]`) was lost upon page reload or JSON export/import.
+* Fixed: Improved backward compatibility when importing legacy (v1.0.0–v1.0.2) JSON files with boolean timeout slots or root-level team fields.
+* Fixed: Preserved 16th–18th player slots, detailed `eventLog` entries, and `liveState` court positions when saving data imported from the Mini Basketball edition.
+* Fixed: Corrected hardcoded Japanese button labels on `fullscreenchange` in the English version (`index-en.html`).
+
 = 1.0.9 =
 
 * Updated: Tested up to WordPress 7.1.
@@ -145,6 +157,10 @@ If you opt in, the plugin sends **anonymous event counts only** (plugin version,
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+
+Major feature and stability update: adds real-time quarter score auto-sync, a "Next Game (Keep Roster)" reset button, tablet numeric keypad optimization, and fixes for 3rd second-half timeout persistence and Mini Basketball data compatibility. Recommended for all users.
 
 = 1.0.9 =
 

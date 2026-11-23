@@ -23,7 +23,8 @@ Experience the full functionality without installation:
 
 ## ✨ Key Features
 
-* **Real‑time Scoring:** Quick input for 2P, 3P, and FT. Player statistics are auto-calculated.
+* **Real‑time Scoring & Auto Quarter Sync:** Quick numeric input for 2P, 3P, and FT. Automatically calculates individual player points, per-quarter team totals & FT/FTA breakdowns, and syncs directly with the top quarter scoreboard in real time (manual override also supported).
+* **Next Game (Keep Roster) Reset:** Start the next game on tournament days in one click by clearing scores, fouls, timeouts, and timestamps while keeping team names, player names, and jersey numbers intact.
 * **Timestamped Events:** Automatically records the exact time of every foul, timeout, and score.
 * **Running Score Visualization:** Professional tracking of game flow (1–160 pts).
 * **Print & PDF Ready:** Optimized for A4 landscape printing or saving as PDF via the browser.

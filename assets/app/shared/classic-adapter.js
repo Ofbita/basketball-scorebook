@@ -136,10 +136,13 @@
   }
 
   function normalizeClassicTimeoutSlot(slot) {
+    if (typeof slot === 'boolean') {
+      return { active: slot, time: '' };
+    }
     const src = ensureObject(slot);
     return {
       active: !!src.active,
-      time: src.time || ''
+      time: src.time || src.rawClock || ''
     };
   }
 
@@ -154,11 +157,27 @@
 
   function commonTimeoutsFromClassic(raw) {
     const src = ensureObject(raw);
+    if (src.q1 || src.q2 || src.q3 || src.q4) {
+      const q4Slots = ensureArray(src.q4);
+      return {
+        q1: [S.createMiniTimeoutSlot(ensureArray(src.q1)[0])],
+        q2: [S.createMiniTimeoutSlot(ensureArray(src.q2)[0])],
+        q3: [S.createMiniTimeoutSlot(ensureArray(src.q3)[0])],
+        q4: q4Slots.length > 1
+          ? [S.createMiniTimeoutSlot(q4Slots[0]), S.createMiniTimeoutSlot(q4Slots[1])]
+          : [S.createMiniTimeoutSlot(q4Slots[0]), S.createMiniTimeoutSlot()],
+        ot1: [S.createMiniTimeoutSlot(ensureArray(src.ot1)[0])],
+        ot2: [S.createMiniTimeoutSlot(ensureArray(src.ot2)[0])]
+      };
+    }
     return {
       q1: [S.createMiniTimeoutSlot(ensureArray(src.firstHalf)[0])],
       q2: [S.createMiniTimeoutSlot(ensureArray(src.firstHalf)[1])],
       q3: [S.createMiniTimeoutSlot(ensureArray(src.secondHalf)[0])],
-      q4: [S.createMiniTimeoutSlot(ensureArray(src.secondHalf)[1])],
+      q4: [
+        S.createMiniTimeoutSlot(ensureArray(src.secondHalf)[1]),
+        S.createMiniTimeoutSlot(ensureArray(src.secondHalf)[2])
+      ],
       ot1: [S.createMiniTimeoutSlot(ensureArray(src.ot1)[0])],
       ot2: [S.createMiniTimeoutSlot(ensureArray(src.ot2)[0])]
     };
@@ -166,6 +185,21 @@
 
   function classicTimeoutsFromCommon(raw) {
     const src = ensureObject(raw);
+    if (Array.isArray(src.firstHalf) || Array.isArray(src.secondHalf)) {
+      return {
+        firstHalf: [
+          normalizeClassicTimeoutSlot(ensureArray(src.firstHalf)[0]),
+          normalizeClassicTimeoutSlot(ensureArray(src.firstHalf)[1])
+        ],
+        secondHalf: [
+          normalizeClassicTimeoutSlot(ensureArray(src.secondHalf)[0]),
+          normalizeClassicTimeoutSlot(ensureArray(src.secondHalf)[1]),
+          normalizeClassicTimeoutSlot(ensureArray(src.secondHalf)[2])
+        ],
+        ot1: [normalizeClassicTimeoutSlot(ensureArray(src.ot1)[0])],
+        ot2: [normalizeClassicTimeoutSlot(ensureArray(src.ot2)[0])]
+      };
+    }
     return {
       firstHalf: [
         normalizeClassicTimeoutSlot(ensureArray(src.q1)[0]),
@@ -174,7 +208,7 @@
       secondHalf: [
         normalizeClassicTimeoutSlot(ensureArray(src.q3)[0]),
         normalizeClassicTimeoutSlot(ensureArray(src.q4)[0]),
-        normalizeClassicTimeoutSlot()
+        normalizeClassicTimeoutSlot(ensureArray(src.q4)[1])
       ],
       ot1: [normalizeClassicTimeoutSlot(ensureArray(src.ot1)[0])],
       ot2: [normalizeClassicTimeoutSlot(ensureArray(src.ot2)[0])]
@@ -231,10 +265,14 @@
       fouls: ensureArray(src.fouls).slice(0, 5).map(function (f) {
         return {
           active: !!f.active,
-          time: f.time || ''
+          time: f.time || '',
+          displayText: f.displayText || '',
+          markShape: f.markShape || '',
+          circle: !!f.circle,
+          slash: !!f.slash
         };
       }).concat(Array.from({ length: Math.max(0, 5 - ensureArray(src.fouls).length) }, function () {
-        return { active: false, time: '' };
+        return { active: false, time: '', displayText: '', markShape: '', circle: false, slash: false };
       })),
       quarterStats: {
         q1: Object.assign({ pt2: '', pt3: '', ft: '', fta: '' }, ensureObject(src.quarterStats && src.quarterStats.q1)),
@@ -270,7 +308,9 @@
     out.assistantCoachLicenseNo = src.assistantCoachLicenseNo || '';
     out.coachCancelled = !!src.coachCancelled;
     out.assistantCoachCancelled = !!src.assistantCoachCancelled;
-    out.players = ensureArray(src.players).slice(0, 15).map(function (player, idx) {
+    const rawPlayers = ensureArray(src.players);
+    const maxSlots = Math.max(15, Math.min(18, rawPlayers.length));
+    out.players = rawPlayers.slice(0, maxSlots).map(function (player, idx) {
       return mapLegacyPlayerToCommon(player, idx, teamKey);
     });
     while (out.players.length < 15) {
@@ -294,6 +334,9 @@
       assistantCoachCancelled: !!src.assistantCoachCancelled,
       players: ensureArray(src.players).slice(0, 15).map(function (player, idx) {
         return mapCommonPlayerToClassic(player, idx, teamKey);
+      }),
+      extraPlayers: ensureArray(src.players).slice(15, 18).map(function (player, idx) {
+        return mapLegacyPlayerToCommon(player, idx + 15, teamKey);
       }),
       teamState: {
         memo: src.teamState && src.teamState.memo ? src.teamState.memo : '',
@@ -355,7 +398,9 @@
       normalized.assistantCoachLicenseNo = team.assistantCoachLicenseNo || '';
       normalized.coachCancelled = !!team.coachCancelled;
       normalized.assistantCoachCancelled = !!team.assistantCoachCancelled;
-      normalized.players = ensureArray(team.players).slice(0, 15).map(function (player, idx) {
+      const rawPlayers = ensureArray(team.players);
+      const maxSlots = Math.max(15, Math.min(18, rawPlayers.length));
+      normalized.players = rawPlayers.slice(0, maxSlots).map(function (player, idx) {
         return mapLegacyPlayerToCommon(player, idx, teamKey);
       });
       while (normalized.players.length < 15) {
@@ -365,7 +410,15 @@
       normalized.teamState.teamFouls = Object.assign({ q1: 0, q2: 0, q3: 0, q4: 0 }, ensureObject(team.teamState && team.teamState.teamFouls));
       normalized.teamState.timeouts = ensureObject(team.teamState && team.teamState.timeouts);
       S.ALL_PERIODS.forEach(function (period) {
-        normalized.teamState.timeouts[period] = [S.createMiniTimeoutSlot(ensureArray(normalized.teamState.timeouts[period])[0])];
+        const periodSlots = ensureArray(normalized.teamState.timeouts[period]);
+        if (period === 'q4' && periodSlots.length > 1) {
+          normalized.teamState.timeouts[period] = [
+            S.createMiniTimeoutSlot(periodSlots[0]),
+            S.createMiniTimeoutSlot(periodSlots[1])
+          ];
+        } else {
+          normalized.teamState.timeouts[period] = [S.createMiniTimeoutSlot(periodSlots[0])];
+        }
       });
       normalized.runningScore = ensureRunningScore(team.runningScore);
       out.teams[teamKey] = normalized;
@@ -381,8 +434,8 @@
     common.game.venue = src.venue || '';
     common.meta.tournamentName = src.meta && src.meta.tournamentName ? src.meta.tournamentName : '';
     common.meta.gameNo = src.meta && src.meta.gameNo ? src.meta.gameNo : '';
-    common.meta.startTime = src.meta && src.meta.time ? src.meta.time : '';
-    common.meta.endTime = src.meta && src.meta.gameEndTime ? src.meta.gameEndTime : '';
+    common.meta.startTime = src.meta && (src.meta.time || src.meta.startTime) ? (src.meta.time || src.meta.startTime) : '';
+    common.meta.endTime = src.meta && (src.meta.gameEndTime || src.meta.endTime) ? (src.meta.gameEndTime || src.meta.endTime) : '';
     common.meta.crewChief = src.meta && src.meta.crewChief ? src.meta.crewChief : '';
     common.meta.umpire = src.meta && src.meta.umpire ? src.meta.umpire : '';
     common.meta.scorer = src.meta && src.meta.scorer ? src.meta.scorer : '';
@@ -392,6 +445,9 @@
     common.meta.homeUniformColor = src.meta && src.meta.homeUniformColor ? src.meta.homeUniformColor : '';
     common.meta.awayUniformColor = src.meta && src.meta.awayUniformColor ? src.meta.awayUniformColor : '';
     common.meta.winnerTeam = src.meta && src.meta.winnerTeam ? src.meta.winnerTeam : '';
+    if (src.meta && src.meta.templateId != null) common.meta.templateId = src.meta.templateId;
+    if (src.meta && src.meta.quarterLength != null) common.meta.quarterLength = Number(src.meta.quarterLength) || 6;
+    if (src.meta && src.meta.overtimeLength != null) common.meta.overtimeLength = Number(src.meta.overtimeLength) || 3;
     common.score.home = Object.assign(S.createScore(), ensureObject(src.myScore));
     common.score.away = Object.assign(S.createScore(), ensureObject(src.opScore));
     common.quarterTimes = Object.assign(S.createQuarterTimes(), ensureObject(src.quarterTimes));
@@ -410,8 +466,24 @@
       };
     });
     common.uiState.activeTeam = src.activeTeam === 'away' ? 'away' : 'home';
-    common.teams.home = mapLegacyTeamToCommon(src.teams && src.teams.home, src.myTeamName || '', 'home');
+    const legacyHomeTeam = (src.teams && src.teams.home) ? src.teams.home : {
+      players: src.players,
+      teamState: src.teamState,
+      runningScore: src.runningScore
+    };
+    common.teams.home = mapLegacyTeamToCommon(legacyHomeTeam, src.myTeamName || '', 'home');
+    if (src.memo && !common.teams.home.teamState.memo) {
+      common.teams.home.teamState.memo = src.memo;
+    }
     common.teams.away = mapLegacyTeamToCommon(src.teams && src.teams.away, src.opponentTeamName || '', 'away');
+    ['home', 'away'].forEach(function (teamKey) {
+      const srcTeam = ensureObject(src.teams && src.teams[teamKey]);
+      if (Array.isArray(srcTeam.extraPlayers) && srcTeam.extraPlayers.length > 0 && common.teams[teamKey].players.length === 15) {
+        srcTeam.extraPlayers.slice(0, 3).forEach(function (ep, idx) {
+          common.teams[teamKey].players.push(mapLegacyPlayerToCommon(ep, 15 + idx, teamKey));
+        });
+      }
+    });
     if (Object.prototype.hasOwnProperty.call(src, 'eventLog')) {
       common.eventLog = S.clone(src.eventLog);
     }
@@ -441,7 +513,10 @@
         homeUniformColor: src.meta.homeUniformColor || '',
         awayUniformColor: src.meta.awayUniformColor || '',
         winnerTeam: src.meta.winnerTeam || '',
-        gameEndTime: src.meta.endTime || ''
+        gameEndTime: src.meta.endTime || '',
+        templateId: src.meta.templateId || '',
+        quarterLength: src.meta.quarterLength != null ? Number(src.meta.quarterLength) : 6,
+        overtimeLength: src.meta.overtimeLength != null ? Number(src.meta.overtimeLength) : 3
       },
       myTeamName: src.teams.home.name || '',
       opponentTeamName: src.teams.away.name || '',
@@ -459,9 +534,18 @@
     };
   }
 
+  function hasNonSnapshotEvents(eventLog) {
+    if (!Array.isArray(eventLog) || eventLog.length === 0) return false;
+    return eventLog.some(function (evt) {
+      return evt && typeof evt.id === 'string' && evt.id.indexOf('evt-classic-') !== 0;
+    });
+  }
+
   function fromViewModel(viewModel) {
     var common = fromLegacy(viewModel);
-    common.eventLog = createSafetyEventLogFromCommon(common);
+    if (!hasNonSnapshotEvents(common.eventLog)) {
+      common.eventLog = createSafetyEventLogFromCommon(common);
+    }
     return common;
   }
 

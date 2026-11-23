@@ -45,18 +45,39 @@
     ]);
   }
  
+  function isSnapshotOnlyEventLog(log) {
+    if (!Array.isArray(log) || log.length === 0) return true;
+    return log.every(function (evt) {
+      return evt && typeof evt.id === 'string' && evt.id.indexOf('evt-classic-') === 0;
+    });
+  }
+
+  function hasDetailedEventLog(log) {
+    if (!Array.isArray(log) || log.length === 0) return false;
+    return log.some(function (evt) {
+      return evt && typeof evt.id === 'string' && evt.id.indexOf('evt-classic-') !== 0;
+    });
+  }
+
   // ── マージ ──
  
   /**
    * 保存ペイロード `target` に、古いストレージまたはインポート元 `preserveSource` からフィールドを補完する。
-   * - `eventLog`, `annotations`, `liveState`: target に無いときだけ preserve から補完（画面の正本を優先）。
+   * - `eventLog`: target 側が classic の簡易スナップショットのみで、preserveSource に詳細な eventLog がある場合は preserveSource を維持。
+   * - `annotations`, `liveState`: target に無い、または空の初期状態の場合は preserveSource から補完。
+   * - `teams.*.players` の 16〜18人目: target が 15名で preserveSource に 16〜18人目がある場合は補完。
    * - 上記以外で `commonRootKeys` に無いキー: target に無ければコピー（将来拡張の未知キー温存）。
-   * index_mini の `savePayload(buildStoragePayload())` は adapter 変換で eventLog を欠き得るため、
-   * 欠落時のフォールバックとして `_mergePreservedFromStorage` とセットで重要。
    */
   function mergePreservedCommonFields(target, preserveSource) {
     if (!preserveSource || typeof preserveSource !== 'object') return target;
  
+    if (
+      (!Object.prototype.hasOwnProperty.call(target, 'eventLog') || isSnapshotOnlyEventLog(target.eventLog)) &&
+      hasDetailedEventLog(preserveSource.eventLog)
+    ) {
+      target.eventLog = deepClone(preserveSource.eventLog);
+    }
+
     var preferKeys = ['eventLog', 'annotations', 'liveState'];
     preferKeys.forEach(function (k) {
       if (Object.prototype.hasOwnProperty.call(target, k)) return;
@@ -64,6 +85,56 @@
         target[k] = deepClone(preserveSource[k]);
       }
     });
+
+    if (preserveSource.annotations && typeof preserveSource.annotations === 'object') {
+      target.annotations = ensureObject(target.annotations);
+      ['foulMarks', 'timeoutMarks', 'runningMarks', 'statMarks'].forEach(function (mk) {
+        var targetMarks = target.annotations[mk];
+        var srcMarks = preserveSource.annotations[mk];
+        if (
+          srcMarks && typeof srcMarks === 'object' && Object.keys(srcMarks).length > 0 &&
+          (!targetMarks || typeof targetMarks !== 'object' || Object.keys(targetMarks).length === 0)
+        ) {
+          target.annotations[mk] = deepClone(srcMarks);
+        }
+      });
+    }
+
+    if (preserveSource.liveState && typeof preserveSource.liveState === 'object') {
+      target.liveState = ensureObject(target.liveState);
+      ['homeOnCourtIds', 'awayOnCourtIds'].forEach(function (ak) {
+        if (
+          Array.isArray(preserveSource.liveState[ak]) && preserveSource.liveState[ak].length > 0 &&
+          (!Array.isArray(target.liveState[ak]) || target.liveState[ak].length === 0)
+        ) {
+          target.liveState[ak] = deepClone(preserveSource.liveState[ak]);
+        }
+      });
+      ['homeCourtPositions', 'awayCourtPositions'].forEach(function (pk) {
+        var targetPos = target.liveState[pk];
+        var srcPos = preserveSource.liveState[pk];
+        if (
+          srcPos && typeof srcPos === 'object' && Object.keys(srcPos).length > 0 &&
+          (!targetPos || typeof targetPos !== 'object' || Object.keys(targetPos).length === 0)
+        ) {
+          target.liveState[pk] = deepClone(srcPos);
+        }
+      });
+    }
+
+    if (target.teams && preserveSource.teams) {
+      ['home', 'away'].forEach(function (teamKey) {
+        var tTeam = target.teams[teamKey];
+        var sTeam = preserveSource.teams[teamKey];
+        if (
+          tTeam && Array.isArray(tTeam.players) && tTeam.players.length === 15 &&
+          sTeam && Array.isArray(sTeam.players) && sTeam.players.length > 15
+        ) {
+          var extras = deepClone(sTeam.players.slice(15, 18));
+          tTeam.players = tTeam.players.concat(extras);
+        }
+      });
+    }
  
     var known = commonRootKeys();
     Object.keys(preserveSource).forEach(function (k) {
